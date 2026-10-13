@@ -2218,21 +2218,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
       const r = resolve(a.getAttribute("href")); if (!r || !current || r.page.id !== current.id || r.target) return;
       if (location.hash === a.getAttribute("href") || (r.page.id === "home" && !location.hash)) { e.preventDefault(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); }
     });
-    // the claude.ai viewer sometimes reloads the page (when you zoom, rotate or resize); land back on the same page and spot
-    const SPOT = "dn-spot";
-    const remember = () => { try { sessionStorage.setItem(SPOT, JSON.stringify({ h: current ? "#" + current.id : "", y: Math.round(window.scrollY), at: Date.now() })); } catch (e) {} };
-    let back = null;
-    if (!location.hash) { try { const s = JSON.parse(sessionStorage.getItem(SPOT) || "null"); if (s && s.h && Date.now() - s.at < 30 * 60e3) back = s; } catch (e) {} }
-    if (back && back.h !== "#home") { try { history.replaceState(null, "", back.h); } catch (e) {} }
-    go(location.hash || (back ? back.h : ""), true);
-    if (back && back.y > 0) {
-      const put = () => window.scrollTo({ top: back.y, behavior: "instant" });
-      requestAnimationFrame(put);
-      if (document.readyState !== "complete") window.addEventListener("load", () => setTimeout(put, 60), { once: true });
-    }
-    let spotT; window.addEventListener("scroll", () => { clearTimeout(spotT); spotT = setTimeout(remember, 250); }, { passive: true });
-    window.addEventListener("dn:page", () => setTimeout(remember, 400));
-    window.addEventListener("pagehide", remember);
+    go(location.hash, true); // on its own address, a reload keeps the page in the link (e.g. /#faq)
   })();
   toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }));
 
