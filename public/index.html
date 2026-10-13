@@ -2080,10 +2080,10 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
   const toast = (msg) => { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2600); };
 
   /* RSVP + memory wall links */
+  // RSVP, memory wall and song requests live on this site's own RSVP page (it talks to the Google backend)
   document.querySelectorAll("[data-rsvp-link]").forEach((a) => {
     if (rsvpUrl) {
-      a.href = rsvpUrl + ({ wall: "?tab=wall", song: "?focus=song" }[a.dataset.rsvpLink] || "");
-      a.target = "_blank"; a.rel = "noopener";
+      a.href = "/rsvp/" + ({ wall: "?tab=wall", song: "?focus=song" }[a.dataset.rsvpLink] || "");
     } else {
       a.classList.add("pending"); a.setAttribute("aria-disabled", "true");
       a.addEventListener("click", (e) => { e.preventDefault(); toast("Online RSVP opens very soon. Please check back shortly."); });
