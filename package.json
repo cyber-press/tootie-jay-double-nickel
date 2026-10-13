@@ -1,0 +1,9 @@
+{
+  "name": "tootie-jay-double-nickel",
+  "private": true,
+  "type": "module",
+  "description": "Tootie Jay's Double Nickel 90's Birthday Bash invitation site (Powered by PressCreates)",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
