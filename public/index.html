@@ -882,28 +882,6 @@ html.lb-open { overflow:hidden; }
 .foot-credit a:hover { color:#f6e3b0; text-decoration-color:currentColor; text-underline-offset:6px; }
 .ex-card .icon-ring { transition:transform .35s var(--ease); }
 @media (hover:hover) and (prefers-reduced-motion:no-preference) { .ex-card:hover .icon-ring, .note:hover .icon-ring, .dress-card:hover .icon-ring { transform:rotate(-8deg) scale(1.06); } .note .icon-ring, .dress-card .icon-ring { transition:transform .35s var(--ease); } }
-/* ===== Photo break: pinned, the next section slides over it ===== */
-.pin { position:sticky; top:0; z-index:0; height:100vh; height:100svh; overflow:hidden; background:#140c11; color:#f6eddf; }
-.pin-stage { position:relative; height:100%; display:grid; place-items:center; padding:calc(var(--nav-h) + 1rem) var(--gutter) 2rem; }
-.pin-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:62% 50%; opacity:.55; }
-.pin-stage::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 50%,rgba(20,12,17,.15),rgba(20,12,17,.85) 75%),linear-gradient(180deg,rgba(20,12,17,.55),transparent 30%,transparent 70%,rgba(20,12,17,.8)); }
-.pin-inner { position:relative; display:grid; grid-template-columns:auto minmax(0,30rem); align-items:center; gap:clamp(2rem,5vw,4.5rem); max-width:68rem; }
-.pin-frame { margin:0; width:clamp(13rem,26vw,22rem); aspect-ratio:3/4; padding:.6rem; background:#f6eddf; border:1px solid rgba(217,182,109,.8); box-shadow:0 30px 60px rgba(0,0,0,.55); rotate:-3deg; }
-.pin-frame img { display:block; width:100%; height:100%; object-fit:cover; object-position:50% 30%; }
-.pin-kicker { margin:0 0 .9rem; font:700 .72rem/1.3 var(--mono); letter-spacing:.18em; text-transform:uppercase; color:#d9b66d; }
-.pin-quote { margin:0; font:italic 900 clamp(2.4rem,5.4vw,4.4rem)/1.02 var(--serif); letter-spacing:-.02em; color:#f2dfb0; text-shadow:0 4px 30px rgba(0,0,0,.5); text-wrap:balance; }
-.pin-sub { margin:1rem 0 0; font-size:clamp(1rem,1.6vw,1.15rem); color:#e3d6c4; }
-/* everything after it on Home rides above it, like a sheet sliding up */
-#main > #pin ~ :not(dialog) { position:relative; z-index:1; background-color:var(--paper); }
-#main > #pin + * { box-shadow:0 -24px 48px rgba(20,12,17,.35); border-top:1px solid rgba(177,138,69,.6); }
-@media (max-width:760px) {
-  .pin-inner { grid-template-columns:1fr; justify-items:center; text-align:center; gap:1.5rem; }
-  .pin-frame { width:min(58vw,15rem); }
-  .pin-bg { object-position:70% 50%; }
-}
-/* short screens (phones on their side): no pinning, just a normal band */
-@media (max-height:560px) { .pin { position:relative; height:auto; } .pin-stage { padding-block:3rem; } .pin-frame { width:11rem; } }
-@media print { .pin { position:relative; height:auto; } }
 #main.pg-enter > :not([data-off]) { animation:pg-in .45s var(--ease) both; }
 @keyframes pg-in { from { opacity:0; transform:translateY(10px); } }
 .pg-focus:focus, .pg-focus:focus-visible { outline:none; }
@@ -1082,23 +1060,6 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
           <p class="eyebrow">Hosted by Tenisia Ruiz</p>
           <h2 class="h-section">Fifty-five dynamic years deserve a proper spotlight.</h2>
           <p class="lead">Join us in honoring Tootie Jay’s 55th “Double Nickel” milestone celebration through golden-era 90s nostalgia, music, elegance, and an unforgettable night shared with the people who made every chapter count.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PHOTO BREAK: pinned while the next section slides over it -->
-  <section id="pin" class="pin" aria-label="Photo of Tootie Jay">
-    <div class="pin-stage">
-      <img class="pin-bg" src="photos/hero-city.webp" width="2400" height="1200" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      <div class="pin-inner">
-        <figure class="pin-frame reveal">
-          <img src="photos/tootie-jay-3.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Tootie Jay smiling in crisp white on a balcony over the city at night">
-        </figure>
-        <div class="pin-copy reveal">
-          <p class="pin-kicker">Double Nickel · Still shining</p>
-          <p class="pin-quote">Fifty-five never looked this good.</p>
-          <p class="pin-sub">Same smile, same style, one more reason to party.</p>
         </div>
       </div>
     </div>
@@ -1557,7 +1518,7 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
     }
   }
   Object.keys(IMG).forEach(applyImg);
-  const SECTIONS = [["flyer", "Official flyer"], ["about", "About the celebration"], ["pin", "Photo break"], ["venue", "Venue & directions"], ["schedule", "Schedule"], ["dress-code", "Dress code"], ["entertainment", "Soundtrack"], ["gallery", "Photo gallery"], ["memories", "Memory wall"], ["updates", "Recent updates"], ["rsvp", "RSVP"], ["faq", "FAQ"]];
+  const SECTIONS = [["flyer", "Official flyer"], ["about", "About the celebration"], ["venue", "Venue & directions"], ["schedule", "Schedule"], ["dress-code", "Dress code"], ["entertainment", "Soundtrack"], ["gallery", "Photo gallery"], ["memories", "Memory wall"], ["updates", "Recent updates"], ["rsvp", "RSVP"], ["faq", "FAQ"]];
   function applyHide() {
     SECTIONS.forEach(([id]) => {
       const off = Boolean((content.hide || {})[id]), sec = document.getElementById(id);
@@ -2169,7 +2130,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
   (function () {
     const main = $("main"), BASE = document.title;
     const PAGES = [
-      { id: "home", label: "Home", secs: ["hero", "flyer", "about", "pin", "explore", "updates"] },
+      { id: "home", label: "Home", secs: ["hero", "flyer", "about", "explore", "updates"] },
       { id: "venue", label: "Venue", secs: ["venue"] },
       { id: "schedule", label: "Schedule", secs: ["schedule", "entertainment"] },
       { id: "dress-code", label: "Dress Code", secs: ["dress-code"] },
