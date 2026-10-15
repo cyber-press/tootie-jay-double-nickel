@@ -883,24 +883,41 @@ html.lb-open { overflow:hidden; }
 .ex-card .icon-ring { transition:transform .35s var(--ease); }
 @media (hover:hover) and (prefers-reduced-motion:no-preference) { .ex-card:hover .icon-ring, .note:hover .icon-ring, .dress-card:hover .icon-ring { transform:rotate(-8deg) scale(1.06); } .note .icon-ring, .dress-card .icon-ring { transition:transform .35s var(--ease); } }
 /* ===== Out-of-town guests ===== */
-.stay-grid { display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:1rem; align-items:stretch; }
-.stay-fly { display:grid; align-content:start; gap:.8rem; padding:clamp(1.4rem,3vw,2rem); border:1px solid rgba(177,138,69,.6); border-radius:2px; background:linear-gradient(135deg,#140c11,var(--plum) 60%,var(--wine-deep)); color:#e3d6c4; }
-.stay-fly .icon-ring { background:transparent; border-color:rgba(217,182,109,.7); color:#d9b66d; }
-.stay-fly h3 { font:italic 700 1.6rem/1.2 var(--serif); color:#f2dfb0; }
-.stay-fly p { margin:0; }
-.stay-fly .stay-tip { margin-top:.4rem; padding-top:.9rem; border-top:1px solid rgba(242,223,176,.25); color:#f6eddf; font-weight:700; }
-.stay-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
-.stay-card { display:flex; gap:.9rem; padding:1.1rem 1.15rem; }
-.stay-card h3 { font:700 1rem/1.3 var(--sans); }
-.stay-card p { margin-top:.25rem; color:var(--muted); font-size:.93rem; }
-.stay-card .stay-addr { color:var(--body); font-size:.88rem; }
-.stay-links { display:flex; flex-wrap:wrap; gap:.4rem 1.1rem; margin-top:.6rem !important; }
-.stay-links a { display:inline-flex; align-items:center; gap:.35rem; padding-block:.35rem; color:var(--wine-text); font-weight:700; text-decoration:none; }
-.stay-links a:hover { text-decoration:underline; text-underline-offset:4px; }
-.stay-links .ico { width:1rem; height:1rem; }
-.stay-note { margin-top:1rem; color:var(--muted); font-size:.92rem; }
-@media (max-width:1023px) { .stay-grid { grid-template-columns:1fr; } }
-@media (max-width:640px) { .stay-list { grid-template-columns:1fr; } }
+.stay-board { overflow:hidden; border:1px solid rgba(177,138,69,.6); border-radius:2px; background:#fff; box-shadow:var(--shadow-sm); }
+.stay-air { display:grid; grid-template-columns:auto auto 1fr; align-items:center; gap:1rem clamp(1.25rem,3vw,2.5rem); padding:1.15rem clamp(1.15rem,3vw,1.75rem); background:linear-gradient(120deg,#140c11,var(--plum) 62%,var(--wine-deep)); color:#e3d6c4; }
+.stay-fly { display:flex; align-items:center; gap:.8rem; }
+.stay-code { font:italic 900 2.1rem/1 var(--serif); letter-spacing:.02em; color:#f2dfb0; }
+.stay-fly p { display:grid; margin:0; line-height:1.3; }
+.stay-fly b { color:#f6eddf; font-weight:700; font-size:.95rem; }
+.stay-fly p span { font-size:.82rem; color:#cdbfae; }
+.stay-tip { justify-self:end; display:inline-flex; align-items:center; gap:.5rem; margin:0; padding:.45rem .85rem; border:1px solid rgba(217,182,109,.45); border-radius:999px; color:#f2dfb0; font:700 .72rem/1.2 var(--mono); letter-spacing:.1em; text-transform:uppercase; }
+.stay-tip .ico { width:.95rem; height:.95rem; color:#d9b66d; }
+.stay-rows { display:grid; grid-template-columns:1fr 1fr; margin:0; padding:0; list-style:none; }
+.stay-row { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:1rem; padding:1.05rem clamp(1.15rem,3vw,1.75rem); border-top:1px solid var(--soft-line); transition:background-color .25s ease; }
+.stay-row:nth-child(even) { border-left:1px solid var(--soft-line); }
+.stay-row:hover { background:#fbf6ec; }
+.stay-n { font:italic 900 1.5rem/1 var(--serif); color:var(--gold); min-width:1.9rem; }
+.stay-info h3 { font:700 1.02rem/1.25 var(--sans); color:var(--ink); }
+.stay-info p { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:.25rem 0 0; color:var(--muted); font-size:.86rem; }
+.stay-info p span + span::before { content:"·"; margin-right:.5rem; color:var(--gold); }
+.stay-act { display:flex; gap:.45rem; }
+.stay-btn { display:inline-flex; align-items:center; justify-content:center; gap:.35rem; min-height:2.5rem; padding:0 .85rem; border:1px solid rgba(177,138,69,.55); border-radius:999px; color:var(--wine-text); font-weight:700; font-size:.85rem; text-decoration:none; transition:background-color .2s ease, color .2s ease, border-color .2s ease; }
+.stay-btn .ico { width:1rem; height:1rem; }
+.stay-btn:hover { background:var(--wine-deep); border-color:var(--wine-deep); color:#fff; }
+.stay-note { margin-top:.85rem; color:var(--muted); font-size:.88rem; }
+@media (max-width:1100px) { .stay-rows { grid-template-columns:1fr; } .stay-row:nth-child(even) { border-left:0; } }
+@media (max-width:760px) {
+  .stay-air { grid-template-columns:1fr 1fr; gap:.9rem 1rem; }
+  .stay-fly { flex-direction:column; align-items:flex-start; gap:.35rem; }
+  .stay-code { font-size:1.7rem; }
+  .stay-tip { letter-spacing:.06em; }
+  .stay-info p span:last-child { flex-basis:100%; }
+  .stay-info p span:last-child::before { content:none; }
+  .stay-tip { grid-column:1 / -1; justify-self:start; }
+  .stay-row { gap:.8rem; }
+  .stay-btn { width:2.6rem; min-height:2.6rem; padding:0; }
+  .stay-btn-t { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+}
 #main.pg-enter > :not([data-off]) { animation:pg-in .45s var(--ease) both; }
 @keyframes pg-in { from { opacity:0; transform:translateY(10px); } }
 .pg-focus:focus, .pg-focus:focus-visible { outline:none; }
@@ -1270,33 +1287,39 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
   <section id="stay" class="section-tight">
     <div class="wrap">
       <div class="sec-head">
-        <p class="eyebrow">Coming From Out of Town?</p>
-        <h2 class="h-section">Fly in, check in, then come party.</h2>
+        <p class="eyebrow">Out-of-Town Guests</p>
+        <h2 class="h-section">Fly in. Check in. Party.</h2>
       </div>
-      <div class="stay-grid">
-        <div class="stay-fly">
-          <span class="icon-ring"><svg class="ico"><use href="#i-plane"/></svg></span>
-          <h3>Fly into SAT</h3>
-          <p>San Antonio International (SAT) is the closest airport, about 15 miles and roughly 20–25 minutes from the venue by car or rideshare.</p>
-          <p>Flights cheaper into Austin (AUS)? That works too. It’s about 75 minutes down I&#8209;35.</p>
-          <p class="stay-tip">Party ends at 1 AM, so stay close and skip the long ride home.</p>
+      <div class="stay-board">
+        <div class="stay-air">
+          <div class="stay-fly"><span class="stay-code">SAT</span><p><b>San Antonio Intl</b><span>Closest · about 25 min</span></p></div>
+          <div class="stay-fly"><span class="stay-code">AUS</span><p><b>Austin-Bergstrom</b><span>Backup · about 75 min</span></p></div>
+          <p class="stay-tip"><svg class="ico" aria-hidden="true"><use href="#i-plane"/></svg><span>Party ends at 1 AM. Stay close.</span></p>
         </div>
-        <div class="stay-list">
-          <div class="card stay-card"><span class="icon-ring"><svg class="ico"><use href="#i-bed"/></svg></span>
-            <div class="stay-txt"><h3>Hilton Garden Inn San Antonio–Live Oak</h3><p class="stay-addr">8101 Pat Booker Rd, Live Oak</p><p>About 2 miles away, straight down Pat Booker Rd.</p>
-              <p class="stay-links"><a href="tel:+12104125923"><svg class="ico"><use href="#i-phone"/></svg><span>(210) 412-5923</span></a><a href="https://www.google.com/maps/search/?api=1&amp;query=Hilton+Garden+Inn+San+Antonio+Live+Oak+8101+Pat+Booker+Rd%2C+Live+Oak" target="_blank" rel="noopener"><svg class="ico"><use href="#i-map-pin"/></svg><span>Map</span></a></p></div></div>
-          <div class="card stay-card"><span class="icon-ring"><svg class="ico"><use href="#i-bed"/></svg></span>
-            <div class="stay-txt"><h3>TownePlace Suites Universal City/Live Oak</h3><p class="stay-addr">15510 I-35 N, Selma</p><p>About 2 miles away. Suites with kitchens, good for families.</p>
-              <p class="stay-links"><a href="tel:+12104556388"><svg class="ico"><use href="#i-phone"/></svg><span>(210) 455-6388</span></a><a href="https://www.google.com/maps/search/?api=1&amp;query=TownePlace+Suites+Universal+City%2FLive+Oak+15510+I-35+N%2C+Selma" target="_blank" rel="noopener"><svg class="ico"><use href="#i-map-pin"/></svg><span>Map</span></a></p></div></div>
-          <div class="card stay-card"><span class="icon-ring"><svg class="ico"><use href="#i-bed"/></svg></span>
-            <div class="stay-txt"><h3>Hampton Inn & Suites Selma–Randolph AFB</h3><p class="stay-addr">14655 I-35 N Access Rd, Selma</p><p>About 2 miles away, with free breakfast.</p>
-              <p class="stay-links"><a href="tel:+12105903388"><svg class="ico"><use href="#i-phone"/></svg><span>(210) 590-3388</span></a><a href="https://www.google.com/maps/search/?api=1&amp;query=Hampton+Inn+%26+Suites+Selma+Randolph+AFB+14655+I-35+N+Access+Rd%2C+Selma" target="_blank" rel="noopener"><svg class="ico"><use href="#i-map-pin"/></svg><span>Map</span></a></p></div></div>
-          <div class="card stay-card"><span class="icon-ring"><svg class="ico"><use href="#i-bed"/></svg></span>
-            <div class="stay-txt"><h3>stayAPT Suites San Antonio–Randolph</h3><p class="stay-addr">7645 N Loop 1604 E, Live Oak</p><p>About 2½ miles away. Apartment-style rooms for longer stays.</p>
-              <p class="stay-links"><a href="tel:+12102391112"><svg class="ico"><use href="#i-phone"/></svg><span>(210) 239-1112</span></a><a href="https://www.google.com/maps/search/?api=1&amp;query=stayAPT+Suites+San+Antonio+Randolph+7645+N+Loop+1604+E%2C+Live+Oak" target="_blank" rel="noopener"><svg class="ico"><use href="#i-map-pin"/></svg><span>Map</span></a></p></div></div>
-        </div>
+        <ol class="stay-rows">
+          <li class="stay-row">
+            <span class="stay-n" aria-hidden="true">01</span>
+            <div class="stay-info"><h3>Hilton Garden Inn</h3><p><span>Live Oak</span><span>~2 mi</span><span>Straight down Pat Booker</span></p></div>
+            <div class="stay-act"><a class="stay-btn" href="tel:+12104125923" aria-label="Call Hilton Garden Inn, (210) 412-5923"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><span class="stay-btn-t">Call</span></a><a class="stay-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Hilton+Garden+Inn+8101+Pat+Booker+Rd%2C+Live+Oak%2C+TX" target="_blank" rel="noopener" aria-label="Hilton Garden Inn on the map"><svg class="ico" aria-hidden="true"><use href="#i-map-pin"/></svg><span class="stay-btn-t">Map</span></a></div>
+          </li>
+          <li class="stay-row">
+            <span class="stay-n" aria-hidden="true">02</span>
+            <div class="stay-info"><h3>TownePlace Suites</h3><p><span>Selma</span><span>~2 mi</span><span>Kitchen suites</span></p></div>
+            <div class="stay-act"><a class="stay-btn" href="tel:+12104556388" aria-label="Call TownePlace Suites, (210) 455-6388"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><span class="stay-btn-t">Call</span></a><a class="stay-btn" href="https://www.google.com/maps/search/?api=1&amp;query=TownePlace+Suites+15510+I-35+N%2C+Selma%2C+TX" target="_blank" rel="noopener" aria-label="TownePlace Suites on the map"><svg class="ico" aria-hidden="true"><use href="#i-map-pin"/></svg><span class="stay-btn-t">Map</span></a></div>
+          </li>
+          <li class="stay-row">
+            <span class="stay-n" aria-hidden="true">03</span>
+            <div class="stay-info"><h3>Hampton Inn &amp; Suites</h3><p><span>Selma</span><span>~2 mi</span><span>Free breakfast</span></p></div>
+            <div class="stay-act"><a class="stay-btn" href="tel:+12105903388" aria-label="Call Hampton Inn and Suites, (210) 590-3388"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><span class="stay-btn-t">Call</span></a><a class="stay-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Hampton+Inn+%26+Suites+14655+I-35+N%2C+Selma%2C+TX" target="_blank" rel="noopener" aria-label="Hampton Inn and Suites on the map"><svg class="ico" aria-hidden="true"><use href="#i-map-pin"/></svg><span class="stay-btn-t">Map</span></a></div>
+          </li>
+          <li class="stay-row">
+            <span class="stay-n" aria-hidden="true">04</span>
+            <div class="stay-info"><h3>stayAPT Suites</h3><p><span>Live Oak</span><span>~2 mi</span><span>Apartment-style</span></p></div>
+            <div class="stay-act"><a class="stay-btn" href="tel:+12102391112" aria-label="Call stayAPT Suites, (210) 239-1112"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><span class="stay-btn-t">Call</span></a><a class="stay-btn" href="https://www.google.com/maps/search/?api=1&amp;query=stayAPT+Suites+7645+N+Loop+1604+E%2C+Live+Oak%2C+TX" target="_blank" rel="noopener" aria-label="stayAPT Suites on the map"><svg class="ico" aria-hidden="true"><use href="#i-map-pin"/></svg><span class="stay-btn-t">Map</span></a></div>
+          </li>
+        </ol>
       </div>
-      <p class="stay-note">Book directly with the hotel. If the host sets up a group rate, you’ll see it in Recent updates.</p>
+      <p class="stay-note">Book direct with the hotel. Any group rate will show up in Recent updates.</p>
     </div>
   </section>
 
@@ -2387,7 +2410,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
     const root = document.documentElement; root.classList.add("dn-motion");
     const SEL = [".sec-head > *", ".flyer-frame", ".flyer-copy > *", ".panel", ".ex-card", ".explore-rsvp", ".venue", ".map-frame", ".note",
       ".palette", ".swatch", ".dress-card", ".do-yes", ".do-no", ".g-item", ".rsvp-cta", ".ticket-rows > div", ".faq details", ".tz-note",
-      ".foot-col", ".foot-rule"].join(",");
+      ".foot-col", ".foot-rule", ".stay-board"].join(",");
     const units = () => Array.from(document.querySelectorAll(SEL)).filter((u) => !u.closest("#hero, .timeline, dialog, .cms-bar, .cms-drawer"));
     const done = (u) => { u.classList.remove("rv", "rv-in"); u.style.removeProperty("--rv-d"); };
     const show = (u) => {
