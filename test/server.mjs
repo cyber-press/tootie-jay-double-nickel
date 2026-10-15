@@ -15,6 +15,11 @@ globalThis.__DN_STORE = {
   async getWithMetadata(k) { if (!mem.has(k)) return null; const v = mem.get(k); return { data: v.data, metadata: v.metadata }; },
 };
 globalThis.__DN_VERIFY = async (k) => { calls.verify++; await new Promise((r) => setTimeout(r, 120)); return k === "test-host-key"; };
+globalThis.__DN_WALL = async () => JSON.parse(process.env.WALL || JSON.stringify([
+  { name: "Aunt Rhonda", message: "Fifty-five and still the flyest one in every room. Remember the summer of '96 when you talked us into those matching FUBU fits? Iconic. Love you, baby!", posted: "2026-10-14T18:20:00Z" },
+  { name: "Marcus J.", message: "Happy Double Nickel, Tootie! You taught me how to two-step and how to show up for people. Can't wait to celebrate you.", posted: "2026-10-13T02:10:00Z" },
+  { name: "Keisha & Dre", message: "From roller rink nights to now. Cheers to 55 more!", posted: "2026-10-11T22:45:00Z" },
+  { name: "Old note", message: "Should not show.", posted: "2026-10-01T22:45:00Z" }]));
 const { default: api } = await import("../netlify/functions/api.mjs");
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".woff2": "font/woff2" };

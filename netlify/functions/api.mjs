@@ -124,12 +124,35 @@ async function servePhoto(name) {
   });
 }
 
+
+/* ---------- memory wall preview: latest approved notes (public, cached briefly at the edge) ---------- */
+async function wall() {
+  let list;
+  if (globalThis.__DN_WALL) list = await globalThis.__DN_WALL();
+  else {
+    const res = await fetch(GOOGLE + "?action=messages", { redirect: "follow" });
+    const data = await res.json();
+    if (!data || !data.ok || !Array.isArray(data.messages)) throw new Error("wall");
+    list = data.messages;
+  }
+  const clip = (t, n) => { t = String(t || "").trim(); return t.length > n ? t.slice(0, n - 1).trimEnd() + "…" : t; };
+  const notes = list.slice(0, 3).map((m) => ({ name: clip(m.name, 60), message: clip(m.message, 420), posted: m.posted }));
+  return new Response(JSON.stringify({ ok: true, total: list.length, notes }), {
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "public, max-age=60",
+      "netlify-cdn-cache-control": "public, durable, s-maxage=120, stale-while-revalidate=600",
+    },
+  });
+}
+
 export default async (req) => {
   const url = new URL(req.url);
   const path = url.pathname.replace(/\/+$/, "");
   try {
     if (path.startsWith("/img/")) return req.method === "GET" || req.method === "HEAD" ? await servePhoto(path.slice(5)) : fail(405, "method", "Not allowed.");
     if (path === "/api/site" && req.method === "GET") return await getSite();
+    if (path === "/api/wall" && req.method === "GET") { try { return await wall(); } catch (e) { return fail(502, "wall_unavailable", "The memory wall couldn’t be reached."); } }
     if (req.method !== "POST") return fail(405, "method", "Not allowed.");
     if (path === "/api/login") return await login(req);
     if (path === "/api/history") return await history(req);

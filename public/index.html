@@ -918,6 +918,43 @@ html.lb-open { overflow:hidden; }
   .stay-btn { width:2.6rem; min-height:2.6rem; padding:0; }
   .stay-btn-t { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
 }
+/* ===== Memory wall preview ===== */
+.wp-head { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:.5rem 2rem; }
+.wp-count { margin:0 0 .4rem; font:700 .72rem/1.3 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--gold-text); }
+.wp-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
+.wp-grid:focus-visible { outline:2px solid var(--gold); outline-offset:6px; }
+.wp-note { position:relative; display:flex; flex-direction:column; min-height:12.5rem; margin:0; padding:1.5rem 1.4rem 1.2rem; border:1px solid var(--soft-line); border-top:3px solid var(--gold); border-radius:2px; background:#fff; box-shadow:var(--shadow-sm); transition:transform .3s var(--ease), box-shadow .3s ease; }
+.wp-note:nth-child(2) { border-top-color:var(--wine); }
+.wp-note:nth-child(3) { border-top-color:var(--plum); }
+.wp-note::before { content:"\201C"; position:absolute; top:.35rem; right:1rem; font:900 4rem/1 var(--serif); color:rgba(177,138,69,.22); pointer-events:none; }
+@media (hover:hover) and (prefers-reduced-motion:no-preference) { .wp-note:not(.wp-ghost):hover { transform:translateY(-3px) rotate(-.4deg); box-shadow:var(--shadow-lg); } }
+.wp-note blockquote { flex:1; margin:0; padding-right:2.4rem; color:var(--body); font:italic 400 1.05rem/1.55 var(--serif); white-space:pre-line; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden; }
+.wp-note figcaption { display:flex; align-items:baseline; justify-content:space-between; gap:.75rem; margin-top:1rem; padding-top:.8rem; border-top:1px dashed rgba(177,138,69,.45); }
+.wp-note .who { font:700 .95rem/1.3 var(--sans); color:var(--wine-text); }
+.wp-note time { flex:none; font:400 .72rem var(--mono); color:var(--muted); }
+.wp-ghost { background:linear-gradient(100deg,#fff 30%,#f7f0e3 50%,#fff 70%) 0 0/300% 100%; animation:wp-shim 1.4s linear infinite; border-top-color:var(--soft-line) !important; }
+.wp-ghost::before { content:none; }
+@keyframes wp-shim { to { background-position:-100% 0; } }
+@media (prefers-reduced-motion:reduce) { .wp-ghost { animation:none; } }
+.wp-first { grid-column:1 / -1; min-height:0; align-items:flex-start; gap:.4rem; padding:1.6rem; }
+.wp-first h3 { padding-right:2.4rem; }
+.wp-first h3 { font:italic 700 1.4rem/1.25 var(--serif); color:var(--ink); }
+.wp-first p { color:var(--muted); }
+.wp-cta { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem 2rem; margin-top:1.25rem; padding:1.2rem 1.4rem; border:1px solid rgba(177,138,69,.6); border-radius:2px; background:linear-gradient(135deg,#140c11,var(--plum) 60%,var(--wine-deep)); color:#e3d6c4; }
+.wp-cta b { font:italic 700 1.25rem var(--serif); color:#f2dfb0; margin-right:.4rem; }
+.wp-btns { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem 1.4rem; }
+.wp-all { display:inline-flex; align-items:center; gap:.25rem; padding-block:.5rem; color:#f2dfb0; font-weight:700; text-decoration:none; }
+.wp-all .ico { width:1rem; height:1rem; transition:transform .25s var(--ease); }
+.wp-all:hover { color:#fff; } .wp-all:hover .ico { transform:translateX(3px); }
+@media (max-width:900px) { .wp-grid { grid-template-columns:1fr 1fr; } .wp-grid > .wp-note:nth-child(3):not(.wp-first) { display:none; } }
+@media (max-width:640px) {
+  .wp-grid { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:.85rem; margin-inline:calc(-1 * var(--gutter)); padding:0 var(--gutter) .5rem; scrollbar-width:none; }
+  .wp-grid::-webkit-scrollbar { display:none; }
+  .wp-grid > .wp-note { flex:0 0 84%; scroll-snap-align:center; }
+  .wp-grid > .wp-note:nth-child(3):not(.wp-first) { display:flex; }
+  .wp-grid > .wp-first { flex-basis:100%; }
+  .wp-cta .btn { width:100%; } .wp-btns { width:100%; justify-content:center; }
+}
 #main.pg-enter > :not([data-off]) { animation:pg-in .45s var(--ease) both; }
 @keyframes pg-in { from { opacity:0; transform:translateY(10px); } }
 .pg-focus:focus, .pg-focus:focus-visible { outline:none; }
@@ -1283,6 +1320,29 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
     </div>
   </section>
 
+  <!-- MEMORY WALL PREVIEW (Home) -->
+  <section id="wall-peek" class="section-tight">
+    <div class="wrap">
+      <div class="sec-head wp-head">
+        <div>
+          <p class="eyebrow">From the Memory Wall</p>
+          <h2 class="h-section">Love notes for Tootie Jay.</h2>
+        </div>
+        <p class="wp-count" id="wp-count" hidden></p>
+      </div>
+      <div class="wp-grid" id="wp-grid" role="region" aria-label="Latest notes from the memory wall" tabindex="0" aria-live="polite" aria-busy="true">
+        <div class="wp-note wp-ghost" aria-hidden="true"></div><div class="wp-note wp-ghost" aria-hidden="true"></div><div class="wp-note wp-ghost" aria-hidden="true"></div>
+      </div>
+      <div class="wp-cta">
+        <p><b>Got a memory with Tootie?</b> <span>Drop a birthday note. It takes a minute.</span></p>
+        <div class="wp-btns">
+          <a class="btn btn-gold btn-caps" data-rsvp-link="wall" href="#rsvp"><svg class="ico"><use href="#i-pencil"/></svg>Leave yours</a>
+          <a class="wp-all" id="wp-all" href="/rsvp/?tab=wall">Read them all<svg class="ico" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- OUT-OF-TOWN GUESTS -->
   <section id="stay" class="section-tight">
     <div class="wrap">
@@ -1518,7 +1578,7 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
 
   /* ---------- 1. find every editable text (on the pristine page) ---------- */
   const INLINE = new Set(["B", "STRONG", "I", "EM", "BR", "SMALL", "SPAN", "U", "SUP", "TIME"]);
-  const SKIP = "script,style,svg,select,option,textarea,input,[data-noedit],#gallery-grid,#updates-feed,#lightbox,.cal-list,#cd-grid,#cd-local,#cd-done,#toast,.sr-only,.about-55,.nr-55,.tl-index";
+  const SKIP = "script,style,svg,select,option,textarea,input,[data-noedit],#wp-grid,#wp-count,#gallery-grid,#updates-feed,#lightbox,.cal-list,#cd-grid,#cd-local,#cd-done,#toast,.sr-only,.about-55,.nr-55,.tl-index";
   const skip = (el) => el.closest(SKIP);
   // Wrap loose text that sits next to icons or links so it can be edited on its own.
   site.querySelectorAll("*").forEach((el) => {
@@ -1594,7 +1654,7 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
     }
   }
   Object.keys(IMG).forEach(applyImg);
-  const SECTIONS = [["flyer", "Official flyer"], ["about", "About the celebration"], ["venue", "Venue & directions"], ["schedule", "Schedule"], ["dress-code", "Dress code"], ["entertainment", "Soundtrack"], ["gallery", "Photo gallery"], ["memories", "Memory wall"], ["stay", "Out-of-town guests"], ["updates", "Recent updates"], ["rsvp", "RSVP"], ["faq", "FAQ"]];
+  const SECTIONS = [["flyer", "Official flyer"], ["about", "About the celebration"], ["venue", "Venue & directions"], ["schedule", "Schedule"], ["dress-code", "Dress code"], ["entertainment", "Soundtrack"], ["gallery", "Photo gallery"], ["memories", "Memory wall"], ["wall-peek", "Memory wall preview"], ["stay", "Out-of-town guests"], ["updates", "Recent updates"], ["rsvp", "RSVP"], ["faq", "FAQ"]];
   function applyHide() {
     SECTIONS.forEach(([id]) => {
       const off = Boolean((content.hide || {})[id]), sec = document.getElementById(id);
@@ -2168,6 +2228,39 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
   });
   if (!rsvpUrl) $("rsvp-soon").hidden = false;
 
+  /* memory wall preview on Home: latest approved notes (served from this site, cached briefly) */
+  (function () {
+    const grid = $("wall-peek-grid") || $("wp-grid"), count = $("wp-count");
+    if (!grid) return;
+    const fmt = (iso) => { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleDateString("en-US", { month: "short", day: "numeric" }); };
+    const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+    function first() {
+      grid.replaceChildren();
+      const f = el("div", "wp-note wp-first");
+      f.appendChild(el("h3", null, "Be the first to sign the wall."));
+      f.appendChild(el("p", null, "Share a favorite memory or a birthday wish. Notes show up here once the host approves them."));
+      grid.appendChild(f);
+      const all = $("wp-all"); if (all) all.hidden = true;
+    }
+    fetch("/api/wall", { headers: { accept: "application/json" } })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => {
+        const notes = (d && Array.isArray(d.notes) ? d.notes : []).filter((n) => n && n.message);
+        if (!notes.length) return first();
+        grid.replaceChildren(...notes.map((n) => {
+          const fig = el("figure", "wp-note");
+          fig.appendChild(el("blockquote", null, n.message));
+          const cap = el("figcaption");
+          cap.appendChild(el("span", "who", "— " + (n.name || "A friend")));
+          const t = el("time", null, fmt(n.posted)); if (n.posted) t.dateTime = n.posted; cap.appendChild(t);
+          fig.appendChild(cap); return fig;
+        }));
+        if (d.total > notes.length) { count.textContent = d.total + " notes on the wall"; count.hidden = false; }
+      })
+      .catch(first)
+      .finally(() => grid.removeAttribute("aria-busy"));
+  })();
+
   /* navigation */
   const menuBtn = $("menu-btn"), mobileMenu = $("mobile-menu");
   function setMenu(open, focusBack) {
@@ -2206,7 +2299,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
   (function () {
     const main = $("main"), BASE = document.title;
     const PAGES = [
-      { id: "home", label: "Home", secs: ["hero", "flyer", "about", "explore", "stay", "updates"] },
+      { id: "home", label: "Home", secs: ["hero", "flyer", "about", "explore", "wall-peek", "stay", "updates"] },
       { id: "venue", label: "Venue", secs: ["venue"] },
       { id: "schedule", label: "Schedule", secs: ["schedule", "entertainment"] },
       { id: "dress-code", label: "Dress Code", secs: ["dress-code"] },
@@ -2410,7 +2503,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
     const root = document.documentElement; root.classList.add("dn-motion");
     const SEL = [".sec-head > *", ".flyer-frame", ".flyer-copy > *", ".panel", ".ex-card", ".explore-rsvp", ".venue", ".map-frame", ".note",
       ".palette", ".swatch", ".dress-card", ".do-yes", ".do-no", ".g-item", ".rsvp-cta", ".ticket-rows > div", ".faq details", ".tz-note",
-      ".foot-col", ".foot-rule", ".stay-board"].join(",");
+      ".foot-col", ".foot-rule", ".stay-board", ".wp-cta"].join(",");
     const units = () => Array.from(document.querySelectorAll(SEL)).filter((u) => !u.closest("#hero, .timeline, dialog, .cms-bar, .cms-drawer"));
     const done = (u) => { u.classList.remove("rv", "rv-in"); u.style.removeProperty("--rv-d"); };
     const show = (u) => {
