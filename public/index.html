@@ -956,34 +956,37 @@ html.lb-open { overflow:hidden; }
   .wp-cta .btn { width:100%; } .wp-btns { width:100%; justify-content:center; }
 }
 /* ===== Party-updates popup ===== */
-.nl-pop { width:min(100vw - 1.5rem, 30rem); overflow:hidden; border-color:rgba(217,182,109,.7); }
+.nl-pop { width:min(100vw - 1.5rem, 26.5rem); overflow:hidden; border-color:rgba(217,182,109,.7); box-shadow:0 30px 80px rgba(20,12,17,.5); }
 .nl-pop[open] { animation:nl-in .45s var(--ease) both; }
 .nl-pop::backdrop { background:rgba(20,12,17,.62); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
-@keyframes nl-in { from { opacity:0; transform:translateY(18px) scale(.97); } }
+@keyframes nl-in { from { opacity:0; transform:translateY(16px) scale(.97); } }
 @media (prefers-reduced-motion:reduce) { .nl-pop[open] { animation:none; } }
-.nl-band { position:relative; overflow:hidden; padding:1.6rem 4rem 1.4rem 1.6rem; background:linear-gradient(130deg,#140c11,var(--plum) 60%,var(--wine-deep)); color:#e3d6c4; }
-.nl-55 { position:absolute; right:-.6rem; bottom:-2.2rem; font:italic 900 8.5rem/1 var(--serif); color:rgba(217,182,109,.13); pointer-events:none; }
-.nl-kicker { margin:0 0 .4rem; font:700 .7rem/1.3 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:#d9b66d; }
-.nl-title { outline:none; margin:0; font:italic 900 clamp(1.8rem,6vw,2.3rem)/1.05 var(--serif); color:#f2dfb0; }
-.nl-sub { position:relative; margin:.6rem 0 0; font-size:.95rem; }
-.nl-x { position:absolute; top:.9rem; right:.9rem; background:rgba(255,255,255,.08); border-color:rgba(242,223,176,.35); color:#f6eddf; }
+.nl-band { position:relative; overflow:hidden; padding:1.25rem 3.75rem 1.15rem 1.4rem; background:linear-gradient(130deg,#140c11,var(--plum) 60%,var(--wine-deep)); color:#e3d6c4; border-bottom:1px solid rgba(217,182,109,.55); }
+.nl-55 { position:absolute; right:-.4rem; bottom:-1.9rem; font:italic 900 7rem/1 var(--serif); color:rgba(217,182,109,.12); pointer-events:none; }
+.nl-kicker { margin:0 0 .3rem; font:700 .66rem/1.3 var(--mono); letter-spacing:.18em; text-transform:uppercase; color:#d9b66d; }
+.nl-title { outline:none; margin:0; font:italic 900 1.85rem/1.05 var(--serif); color:#f2dfb0; }
+.nl-sub { position:relative; margin:.4rem 0 0; font-size:.9rem; line-height:1.45; }
+.nl-x { position:absolute; top:.8rem; right:.8rem; width:38px; height:38px; background:rgba(255,255,255,.08); border-color:rgba(242,223,176,.35); color:#f6eddf; }
+.nl-x .ico { width:1rem; height:1rem; }
 .nl-x:hover { background:rgba(255,255,255,.16); }
-.nl-form { display:grid; gap:.85rem; padding:1.4rem 1.6rem 1.3rem; }
-.nl-row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
-.nl-form .input { min-height:48px; padding:.7rem .9rem; }
+.nl-form { display:grid; gap:.7rem; padding:1.15rem 1.4rem 1rem; }
+.nl-form .field { gap:.3rem; }
+.nl-form .label { font-size:.8rem; }
+.nl-form .label .opt { font-size:.76rem; }
+.nl-row { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.nl-form .input { min-height:44px; padding:.6rem .8rem; }
 .nl-hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
-.nl-err { margin:0; min-height:0; color:#a30c4f; font-weight:600; font-size:.88rem; }
+.nl-err { margin:0; color:#a30c4f; font-weight:600; font-size:.84rem; }
 .nl-err:empty { display:none; }
-.nl-go { width:100%; margin-top:.2rem; }
+.nl-go { width:100%; min-height:48px; margin-top:.15rem; }
 .nl-go[disabled] { opacity:.7; cursor:progress; }
-.nl-later { justify-self:center; min-height:40px; padding:.3rem .8rem; border:0; background:none; color:var(--muted); font-weight:600; font-size:.9rem; cursor:pointer; }
-.nl-later:hover { color:var(--ink); text-decoration:underline; text-underline-offset:4px; }
-.nl-fine { margin:0; text-align:center; color:var(--muted); font-size:.78rem; }
-.nl-link { padding:0; border:0; background:none; color:var(--wine-text); font:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
-.nl-done { display:grid; justify-items:center; gap:.6rem; padding:2rem 1.6rem 1.8rem; text-align:center; }
-.nl-done-t { font:italic 700 1.6rem/1.2 var(--serif); color:var(--ink); outline:none; }
-.nl-done p { margin:0 0 .5rem; color:var(--muted); }
-@media (max-width:420px) { .nl-band { padding:1.2rem 3.6rem 1.1rem 1.2rem; } .nl-sub { font-size:.9rem; } .nl-form { gap:.7rem; padding:1.05rem 1.2rem 1rem; } .nl-row { gap:.6rem; } .nl-form .input { min-height:46px; } }
+.nl-fine { margin:0; text-align:center; color:var(--muted); font-size:.74rem; line-height:1.5; }
+.nl-link { display:inline; min-height:0; padding:.15rem 0; border:0; background:none; color:var(--wine-text); font:inherit; font-weight:700; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+.nl-done { display:grid; justify-items:center; gap:.5rem; padding:1.5rem 1.4rem 1.4rem; text-align:center; }
+.nl-check { display:grid; place-items:center; width:3rem; height:3rem; border-radius:50%; background:linear-gradient(145deg,#f6e3ae,#d9b66d 60%,#b8893e); color:#3b162d; }
+.nl-check .ico { width:1.35rem; height:1.35rem; }
+.nl-done-t { font:italic 700 1.45rem/1.2 var(--serif); color:var(--ink); outline:none; }
+.nl-done p { margin:0 0 .4rem; color:var(--muted); font-size:.92rem; }
 @media (max-width:340px) { .nl-row { grid-template-columns:1fr; } }
 #main.pg-enter > :not([data-off]) { animation:pg-in .45s var(--ease) both; }
 @keyframes pg-in { from { opacity:0; transform:translateY(10px); } }
@@ -1541,12 +1544,12 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
   </div>
 </dialog>
 
-<dialog id="nl-pop" class="dialog nl-pop" aria-labelledby="nl-title" data-noedit>
+<dialog id="nl-pop" class="dialog nl-pop" aria-labelledby="nl-title" aria-describedby="nl-sub" data-noedit>
   <div class="nl-band">
     <span class="nl-55" aria-hidden="true">55</span>
     <p class="nl-kicker">Party updates</p>
     <h2 id="nl-title" class="nl-title" tabindex="-1" autofocus>Stay in the loop.</h2>
-    <p class="nl-sub">Get the latest details on Tootie Jay’s Double Nickel, sent straight to you. No spam, just party news.</p>
+    <p class="nl-sub" id="nl-sub">Party news and day-of details, sent straight to you.</p>
     <button class="x-btn nl-x" type="button" data-close aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button>
   </div>
   <form class="nl-form" id="nl-form" novalidate>
@@ -1555,18 +1558,17 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
       <label class="field"><span class="label">Last name</span><input class="input" name="last" autocomplete="family-name" required maxlength="60"></label>
     </div>
     <label class="field"><span class="label">Email</span><input class="input" name="email" type="email" inputmode="email" autocomplete="email" required maxlength="200"></label>
-    <label class="field"><span class="label">Phone <span class="opt">(optional)</span></span><input class="input" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="(210) 555-0123"><span class="hint">For day-of texts only. Msg &amp; data rates may apply.</span></label>
+    <label class="field"><span class="label">Phone <span class="opt">· optional, for day-of texts</span></span><input class="input" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="(210) 555-0123"></label>
     <label class="nl-hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
     <p class="nl-err" id="nl-err" role="alert"></p>
     <button class="btn btn-gold btn-caps nl-go" type="submit">Keep me posted</button>
-    <button class="nl-later" type="button" data-close>Maybe later</button>
-    <p class="nl-fine">Used only for this party’s updates. Unsubscribe anytime. See the <button type="button" class="nl-link" data-open="privacy">privacy notice</button>.</p>
+    <p class="nl-fine">No spam. Unsubscribe anytime. Texts: msg &amp; data rates may apply. <button type="button" class="nl-link" data-open="privacy">Privacy</button> · <button type="button" class="nl-link" data-close>Maybe later</button></p>
   </form>
   <div class="nl-done" id="nl-done" hidden>
-    <span class="icon-ring lg"><svg class="ico"><use href="#i-check"/></svg></span>
+    <span class="nl-check" aria-hidden="true"><svg class="ico"><use href="#i-check"/></svg></span>
     <h3 class="nl-done-t" id="nl-done-t" tabindex="-1">You’re on the list!</h3>
     <p>We’ll keep you posted on everything Double Nickel.</p>
-    <button class="btn btn-wine" type="button" data-close>Back to the party</button>
+    <button class="btn btn-gold btn-caps" type="button" data-close>Back to the party</button>
   </div>
 </dialog>
 
