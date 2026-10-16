@@ -955,6 +955,36 @@ html.lb-open { overflow:hidden; }
   .wp-grid > .wp-first { flex-basis:100%; }
   .wp-cta .btn { width:100%; } .wp-btns { width:100%; justify-content:center; }
 }
+/* ===== Party-updates popup ===== */
+.nl-pop { width:min(100vw - 1.5rem, 30rem); overflow:hidden; border-color:rgba(217,182,109,.7); }
+.nl-pop[open] { animation:nl-in .45s var(--ease) both; }
+.nl-pop::backdrop { background:rgba(20,12,17,.62); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
+@keyframes nl-in { from { opacity:0; transform:translateY(18px) scale(.97); } }
+@media (prefers-reduced-motion:reduce) { .nl-pop[open] { animation:none; } }
+.nl-band { position:relative; overflow:hidden; padding:1.6rem 4rem 1.4rem 1.6rem; background:linear-gradient(130deg,#140c11,var(--plum) 60%,var(--wine-deep)); color:#e3d6c4; }
+.nl-55 { position:absolute; right:-.6rem; bottom:-2.2rem; font:italic 900 8.5rem/1 var(--serif); color:rgba(217,182,109,.13); pointer-events:none; }
+.nl-kicker { margin:0 0 .4rem; font:700 .7rem/1.3 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:#d9b66d; }
+.nl-title { outline:none; margin:0; font:italic 900 clamp(1.8rem,6vw,2.3rem)/1.05 var(--serif); color:#f2dfb0; }
+.nl-sub { position:relative; margin:.6rem 0 0; font-size:.95rem; }
+.nl-x { position:absolute; top:.9rem; right:.9rem; background:rgba(255,255,255,.08); border-color:rgba(242,223,176,.35); color:#f6eddf; }
+.nl-x:hover { background:rgba(255,255,255,.16); }
+.nl-form { display:grid; gap:.85rem; padding:1.4rem 1.6rem 1.3rem; }
+.nl-row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+.nl-form .input { min-height:48px; padding:.7rem .9rem; }
+.nl-hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+.nl-err { margin:0; min-height:0; color:#a30c4f; font-weight:600; font-size:.88rem; }
+.nl-err:empty { display:none; }
+.nl-go { width:100%; margin-top:.2rem; }
+.nl-go[disabled] { opacity:.7; cursor:progress; }
+.nl-later { justify-self:center; min-height:40px; padding:.3rem .8rem; border:0; background:none; color:var(--muted); font-weight:600; font-size:.9rem; cursor:pointer; }
+.nl-later:hover { color:var(--ink); text-decoration:underline; text-underline-offset:4px; }
+.nl-fine { margin:0; text-align:center; color:var(--muted); font-size:.78rem; }
+.nl-link { padding:0; border:0; background:none; color:var(--wine-text); font:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+.nl-done { display:grid; justify-items:center; gap:.6rem; padding:2rem 1.6rem 1.8rem; text-align:center; }
+.nl-done-t { font:italic 700 1.6rem/1.2 var(--serif); color:var(--ink); outline:none; }
+.nl-done p { margin:0 0 .5rem; color:var(--muted); }
+@media (max-width:420px) { .nl-band { padding:1.2rem 3.6rem 1.1rem 1.2rem; } .nl-sub { font-size:.9rem; } .nl-form { gap:.7rem; padding:1.05rem 1.2rem 1rem; } .nl-row { gap:.6rem; } .nl-form .input { min-height:46px; } }
+@media (max-width:340px) { .nl-row { grid-template-columns:1fr; } }
 #main.pg-enter > :not([data-off]) { animation:pg-in .45s var(--ease) both; }
 @keyframes pg-in { from { opacity:0; transform:translateY(10px); } }
 .pg-focus:focus, .pg-focus:focus-visible { outline:none; }
@@ -1474,6 +1504,7 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
       </div>
       <nav class="foot-col foot-nav" aria-label="Footer">
         <a href="#venue">Venue</a><a href="#schedule">Schedule</a><a href="#dress-code">Dress Code</a><a href="#rsvp">RSVP</a>
+        <button type="button" data-nl-open>Get party updates</button>
         <button type="button" data-open="privacy">Privacy notice</button>
         <a class="host-link" href="https://script.google.com/macros/s/AKfycbw0oAM_imCcLE61aHOa3CDAnzaOWJbGzhkZzSoi4g0mZuDNk7DxT-QXA9mIHhUtE1Krig/exec?page=admin" target="_blank" rel="noopener nofollow"><svg class="ico"><use href="#i-lock"/></svg>Host login</a>
         <button type="button" class="host-link" data-host-edit data-noedit=""><svg class="ico"><use href="#i-pencil"/></svg>Edit site</button>
@@ -1502,10 +1533,40 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
       <li><b>What we collect:</b> what you type into the RSVP and memory-wall forms. That’s your name, email, phone, attendance, plus-one name, meal, song, dietary, and accessibility notes.</li>
       <li><b>Why:</b> to verify the guest list at the door, plan food and seating, and email you your confirmation and event updates.</li>
       <li><b>Where it’s kept:</b> RSVPs are collected on the Double Nickel guest page and kept privately by the host. Only the host can see them. Your contact details are never shown publicly.</li>
+      <li><b>Party updates:</b> if you sign up for updates, we keep your name, email and optional phone to send news about this event only. Ask to be removed anytime.</li>
       <li><b>Memory wall:</b> only your name and message are shown publicly, and only after the host approves them.</li>
       <li><b>How long:</b> the host deletes guest contact details within 60 days after the event.</li>
       <li><b>Your choice:</b> reply to your confirmation email to have your details corrected or removed at any time.</li>
     </ul>
+  </div>
+</dialog>
+
+<dialog id="nl-pop" class="dialog nl-pop" aria-labelledby="nl-title" data-noedit>
+  <div class="nl-band">
+    <span class="nl-55" aria-hidden="true">55</span>
+    <p class="nl-kicker">Party updates</p>
+    <h2 id="nl-title" class="nl-title" tabindex="-1" autofocus>Stay in the loop.</h2>
+    <p class="nl-sub">Get the latest details on Tootie Jay’s Double Nickel, sent straight to you. No spam, just party news.</p>
+    <button class="x-btn nl-x" type="button" data-close aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button>
+  </div>
+  <form class="nl-form" id="nl-form" novalidate>
+    <div class="nl-row">
+      <label class="field"><span class="label">First name</span><input class="input" name="first" autocomplete="given-name" required maxlength="60"></label>
+      <label class="field"><span class="label">Last name</span><input class="input" name="last" autocomplete="family-name" required maxlength="60"></label>
+    </div>
+    <label class="field"><span class="label">Email</span><input class="input" name="email" type="email" inputmode="email" autocomplete="email" required maxlength="200"></label>
+    <label class="field"><span class="label">Phone <span class="opt">(optional)</span></span><input class="input" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="(210) 555-0123"><span class="hint">For day-of texts only. Msg &amp; data rates may apply.</span></label>
+    <label class="nl-hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+    <p class="nl-err" id="nl-err" role="alert"></p>
+    <button class="btn btn-gold btn-caps nl-go" type="submit">Keep me posted</button>
+    <button class="nl-later" type="button" data-close>Maybe later</button>
+    <p class="nl-fine">Used only for this party’s updates. Unsubscribe anytime. See the <button type="button" class="nl-link" data-open="privacy">privacy notice</button>.</p>
+  </form>
+  <div class="nl-done" id="nl-done" hidden>
+    <span class="icon-ring lg"><svg class="ico"><use href="#i-check"/></svg></span>
+    <h3 class="nl-done-t" id="nl-done-t" tabindex="-1">You’re on the list!</h3>
+    <p>We’ll keep you posted on everything Double Nickel.</p>
+    <button class="btn btn-wine" type="button" data-close>Back to the party</button>
   </div>
 </dialog>
 
@@ -2009,16 +2070,41 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
       const blank = sanitize({});
       if (JSON.stringify(content) !== JSON.stringify(blank)) card("Original design", "The invitation as first published, with none of your edits. Your photos and updates come off too.", blank);
     }
+    function renderSubs(pane) {
+      pane.appendChild(el("p", "cms-note", "People who signed up for party updates from the pop-up on Home. Only you can see this list."));
+      const status = el("p", "cms-note", "Loading sign-ups…"); pane.appendChild(status);
+      post("/subscribers", { key: getKey() }).then((d) => {
+        const list = d.subscribers || [];
+        status.textContent = list.length ? list.length + (list.length === 1 ? " person has" : " people have") + " signed up." : "No sign-ups yet. They’ll show up here as guests join.";
+        if (!list.length) return;
+        const row = el("div", "cms-row");
+        row.appendChild(btn("Download spreadsheet (CSV)", () => {
+          const q = (v) => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+          const csv = [["First name", "Last name", "Email", "Phone", "Signed up"]].concat(list.map((x) => [x.first, x.last, x.email, x.phone, new Date(x.at).toLocaleString("en-US")]))
+            .map((r) => r.map((v) => q(/^[=+\-@]/.test(String(v)) ? "'" + v : v)).join(",")).join("\r\n");
+          const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + csv], { type: "text/csv" }));
+          a.download = "double-nickel-signups.csv"; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        }));
+        row.appendChild(btn("Copy all emails", () => { navigator.clipboard.writeText(list.map((x) => x.email).join(", ")).then(() => toast("Emails copied. Paste them into the BCC line."), () => toast("Couldn’t copy. Use the spreadsheet instead.")); }));
+        pane.appendChild(row);
+        list.forEach((x) => {
+          const k = el("div", "cms-card"); k.appendChild(el("h4", "", x.first + " " + x.last));
+          k.appendChild(el("p", "", x.email + (x.phone ? " · " + x.phone : "")));
+          k.appendChild(el("p", "", "Signed up " + fmtWhen(x.at)));
+          pane.appendChild(k);
+        });
+      }).catch((e) => { status.textContent = e.code === "unauthorized" ? "Your host key didn’t work. Sign out and back in, then try again." : "Couldn’t load sign-ups just now. Please try again."; });
+    }
     function render() {
       drawer.innerHTML = "";
       const tabs = document.createElement("div"); tabs.className = "cms-tabs"; tabs.setAttribute("role", "tablist");
-      [["photos", "Photos"], ["sections", "Sections"], ["updates", "Updates"], ["history", "History"]].forEach(([k, l]) => {
+      [["photos", "Photos"], ["sections", "Sections"], ["updates", "Updates"], ["subs", "Sign-ups"], ["history", "History"]].forEach(([k, l]) => {
         const b = document.createElement("button"); b.type = "button"; b.textContent = l; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(tab === k));
         b.onclick = () => { tab = k; render(); }; tabs.appendChild(b);
       });
       drawer.appendChild(tabs);
       const pane = document.createElement("div"); pane.className = "cms-pane"; drawer.appendChild(pane);
-      if (tab === "photos") renderPhotos(pane); else if (tab === "sections") renderSections(pane); else if (tab === "history") renderHistory(pane); else renderUpdates(pane);
+      if (tab === "photos") renderPhotos(pane); else if (tab === "sections") renderSections(pane); else if (tab === "history") renderHistory(pane); else if (tab === "subs") renderSubs(pane); else renderUpdates(pane);
     }
     const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
     const btn = (label, fn) => { const b = el("button", "cms-btn", label); b.type = "button"; b.onclick = fn; return b; };
@@ -2259,6 +2345,58 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
       })
       .catch(first)
       .finally(() => grid.removeAttribute("aria-busy"));
+  })();
+
+  /* party-updates popup: opens once on its own while someone browses Home, never for the host or after they join */
+  (function () {
+    const dlg = $("nl-pop"), form = $("nl-form"), err = $("nl-err"), done = $("nl-done");
+    if (!dlg || !form) return;
+    const K = "dn-nl", get = () => { try { return JSON.parse(localStorage.getItem(K) || "{}"); } catch (e) { return {}; } };
+    const set = (v) => { try { localStorage.setItem(K, JSON.stringify(Object.assign(get(), v))); } catch (e) {} };
+    const isHost = () => { try { return Boolean(localStorage.getItem("dn-host-key") || sessionStorage.getItem("dn-host-key")); } catch (e) { return false; } };
+    const quiet = () => { const st = get(); return st.joined || (st.later && Date.now() - st.later < 5 * 864e5); };
+    function open(auto) {
+      if (dlg.open) return;
+      if (auto && (quiet() || isHost() || /[?&]edit\b/.test(location.search) || document.documentElement.classList.contains("cms-on") || document.querySelector("dialog[open]"))) return;
+      form.hidden = false; done.hidden = true; err.textContent = "";
+      dlg.showModal(); auto && set({ shown: Date.now() });
+    }
+    document.querySelectorAll("[data-nl-open]").forEach((b) => b.addEventListener("click", () => open(false)));
+    const later = () => { if (!get().joined) set({ later: Date.now() }); };
+    dlg.addEventListener("click", (e) => { if (e.target === dlg || e.target.closest("[data-close]")) later(); }, true);
+    dlg.addEventListener("cancel", later); // Esc
+    dlg.addEventListener("close", later);
+    // automatic: after ~12s on Home, or once they've scrolled a good way down (whichever comes first)
+    let timer = null, armed = false, since = Date.now();
+    const onHome = () => (document.body.dataset.route || "home") === "home";
+    const fire = () => { disarm(); if (onHome()) open(true); };
+    const onScroll = () => { const max = document.documentElement.scrollHeight - innerHeight; if (max > 0 && scrollY / max > 0.4 && Date.now() - since > 4000) fire(); };
+    function arm() { if (armed || quiet() || !onHome()) return; armed = true; since = Date.now(); timer = setTimeout(fire, 12000); addEventListener("scroll", onScroll, { passive: true }); }
+    function disarm() { armed = false; clearTimeout(timer); removeEventListener("scroll", onScroll); }
+    window.addEventListener("dn:page", (e) => (e.detail === "home" ? arm() : disarm()));
+    arm();
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault(); err.textContent = "";
+      const f = form.elements, go = form.querySelector(".nl-go");
+      [f.first, f.last, f.email, f.phone].forEach((i) => i.classList.remove("is-invalid"));
+      const bad = (i, m) => { i.classList.add("is-invalid"); i.focus(); err.textContent = m; };
+      if (!f.first.value.trim()) return bad(f.first, "Please add your first name.");
+      if (!f.last.value.trim()) return bad(f.last, "Please add your last name.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.value.trim())) return bad(f.email, "Please check your email address.");
+      const digits = f.phone.value.replace(/\D/g, "");
+      if (f.phone.value.trim() && (digits.length < 10 || digits.length > 15)) return bad(f.phone, "That phone number looks short. It’s optional, so you can leave it blank.");
+      go.disabled = true; go.textContent = "Adding you…";
+      try {
+        const r = await fetch("/api/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ first: f.first.value, last: f.last.value, email: f.email.value, phone: f.phone.value, website: f.website.value }) });
+        const d = await r.json().catch(() => null);
+        if (!r.ok || !d || !d.ok) throw new Error((d && d.message) || "We couldn’t add you just now. Please try again.");
+        set({ joined: Date.now() });
+        $("nl-done-t").textContent = "You’re on the list, " + f.first.value.trim().split(" ")[0] + "!";
+        form.hidden = true; done.hidden = false; $("nl-done-t").focus();
+        form.reset();
+      } catch (ex) { err.textContent = ex.message || "We couldn’t add you just now. Please try again."; }
+      finally { go.disabled = false; go.textContent = "Keep me posted"; }
+    });
   })();
 
   /* navigation */

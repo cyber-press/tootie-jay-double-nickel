@@ -146,6 +146,43 @@ async function wall() {
   });
 }
 
+/* ---------- party-updates sign-ups (popup on Home); only the host can read the list ---------- */
+const recent = new Map(); // ip -> [timestamps], per warm instance: a light brake on scripted spam
+function tooMany(ip) {
+  const now = Date.now(), list = (recent.get(ip) || []).filter((t) => now - t < 10 * 60_000);
+  list.push(now); recent.set(ip, list);
+  if (recent.size > 5000) recent.clear();
+  return list.length > 8;
+}
+const clean = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f\u007f<>]/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
+async function subscribe(req) {
+  const b = await readBody(req);
+  if (b.website) return json({ ok: true }); // honeypot: bots fill every box
+  const ip = req.headers.get("x-nf-client-connection-ip") || req.headers.get("x-forwarded-for") || "?";
+  if (tooMany(ip)) return fail(429, "busy", "Too many tries. Please wait a few minutes and try again.");
+  const first = clean(b.first, 60), last = clean(b.last, 60), email = clean(b.email, 200).toLowerCase();
+  const phoneRaw = clean(b.phone, 40), digits = phoneRaw.replace(/\D/g, "");
+  if (!first || !last) return fail(400, "bad_name", "Please add your first and last name.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail(400, "bad_email", "That email doesn’t look right.");
+  if (phoneRaw && (digits.length < 10 || digits.length > 15)) return fail(400, "bad_phone", "That phone number doesn’t look right. It’s optional, so you can leave it blank.");
+  const key = "subs/" + (await sha256("sub|" + email)).slice(0, 32);
+  const s = store();
+  const prev = await s.get(key, { type: "json" });
+  const now = new Date().toISOString();
+  await s.setJSON(key, { first, last, email, phone: phoneRaw, at: prev ? prev.at : now, updated: now });
+  return json({ ok: true, again: Boolean(prev) });
+}
+async function subscribers(req) {
+  const b = await readBody(req);
+  const denied = await requireHost(b.key);
+  if (denied) return denied;
+  const s = store();
+  const { blobs } = await s.list({ prefix: "subs/" });
+  const rows = (await Promise.all(blobs.map((x) => s.get(x.key, { type: "json" })))).filter(Boolean);
+  rows.sort((a, c) => String(c.at).localeCompare(String(a.at)));
+  return json({ ok: true, subscribers: rows });
+}
+
 export default async (req) => {
   const url = new URL(req.url);
   const path = url.pathname.replace(/\/+$/, "");
@@ -158,6 +195,8 @@ export default async (req) => {
     if (path === "/api/history") return await history(req);
     if (path === "/api/save") return await save(req);
     if (path === "/api/photo") return await uploadPhoto(req);
+    if (path === "/api/subscribe") return await subscribe(req);
+    if (path === "/api/subscribers") return await subscribers(req);
     return fail(404, "not_found", "Not found.");
   } catch (err) {
     if (err && err.code === "too_large") return fail(413, "too_large", "That’s too much to save at once.");

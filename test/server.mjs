@@ -12,6 +12,7 @@ globalThis.__DN_STORE = {
   async get(k, o = {}) { if (!mem.has(k)) return null; const v = mem.get(k); return o.type === "json" ? JSON.parse(v.data) : v.data; },
   async setJSON(k, v) { mem.set(k, { data: JSON.stringify(v) }); return { modified: true }; },
   async set(k, v, o = {}) { mem.set(k, { data: Buffer.from(v), metadata: o.metadata || {} }); return { modified: true }; },
+  async list(o = {}) { return { blobs: [...mem.keys()].filter((k) => k.startsWith(o.prefix || "")).map((key) => ({ key })) }; },
   async getWithMetadata(k) { if (!mem.has(k)) return null; const v = mem.get(k); return { data: v.data, metadata: v.metadata }; },
 };
 globalThis.__DN_VERIFY = async (k) => { calls.verify++; await new Promise((r) => setTimeout(r, 120)); return k === "test-host-key"; };
