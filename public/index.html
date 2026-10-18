@@ -1079,9 +1079,9 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
   <section id="hero" class="hero noir" aria-labelledby="hero-title">
     <img class="nr-city" src="photos/hero-city.webp" width="2400" height="1200" alt="" aria-hidden="true" decoding="async">
     <div class="nr-photo">
-      <img class="nr-base" src="photos/hero-tootie.webp" width="1440" height="1600" fetchpriority="high" alt="Tootie Jay in a white fedora with a pink band, white vest and hot pink satin shirt">
+      <img class="nr-base" src="photos/hero-tootie-2.webp" width="1440" height="1600" fetchpriority="high" alt="Tootie Jay in a white fedora with a pink band, white vest and hot pink satin shirt">
       <span class="nr-55" aria-hidden="true">55</span>
-      <img class="nr-cut" src="photos/hero-tootie.webp" width="1440" height="1600" alt="" aria-hidden="true">
+      <img class="nr-cut" src="photos/hero-tootie-2.webp" width="1440" height="1600" alt="" aria-hidden="true">
     </div>
     <div class="nr-veil" aria-hidden="true"></div>
     <div class="nr-dust" aria-hidden="true"></div>
@@ -2150,7 +2150,7 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
         const o = draft.imgs[key] || {}, card = el("div", "cms-card");
         card.appendChild(el("h4", "", spec.label));
         const im = el("img", "cms-thumb" + (o.hidden ? " cms-off" : "")); im.alt = "";
-        im.src = o.src || (key === "hero" ? "photos/hero-tootie.webp" : "photos/flyer.webp"); card.appendChild(im);
+        im.src = o.src || (key === "hero" ? "photos/hero-tootie-2.webp" : "photos/flyer.webp"); card.appendChild(im);
         if (o.hidden) card.appendChild(el("p", "", "Removed from the page."));
         const row = el("div", "cms-row");
         row.appendChild(btn("Replace photo", async () => { const src = await pickImage(spec.max); if (!src) return; draft.imgs[key] = { src }; markDirty(); render(); }));
