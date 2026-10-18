@@ -972,7 +972,7 @@ html.lb-open { overflow:hidden; }
 .nl-form { display:grid; gap:.7rem; padding:1.15rem 1.4rem 1rem; }
 .nl-form .field { gap:.3rem; }
 .nl-form .label { font-size:.8rem; }
-.nl-form .label .opt { font-size:.76rem; }
+.nl-form .label .opt { font-size:.76rem; color:var(--muted); }
 .nl-row { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
 .nl-form .input { min-height:44px; padding:.6rem .8rem; }
 .nl-hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
@@ -2073,7 +2073,7 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
       if (JSON.stringify(content) !== JSON.stringify(blank)) card("Original design", "The invitation as first published, with none of your edits. Your photos and updates come off too.", blank);
     }
     function renderSubs(pane) {
-      pane.appendChild(el("p", "cms-note", "People who signed up for party updates from the pop-up on Home. Only you can see this list."));
+      pane.appendChild(el("p", "cms-note", "People who signed up for party updates from the pop-up on Home. Only you can see this list. If someone asks to unsubscribe, remove them here."));
       const status = el("p", "cms-note", "Loading sign-ups…"); pane.appendChild(status);
       post("/subscribers", { key: getKey() }).then((d) => {
         const list = d.subscribers || [];
@@ -2093,6 +2093,13 @@ body[data-route="gallery"] .pager { max-width:none; padding-inline:max(var(--gut
           const k = el("div", "cms-card"); k.appendChild(el("h4", "", x.first + " " + x.last));
           k.appendChild(el("p", "", x.email + (x.phone ? " · " + x.phone : "")));
           k.appendChild(el("p", "", "Signed up " + fmtWhen(x.at)));
+          const rr = el("div", "cms-row"), rb = btn("Remove", () => {
+            if (rb.dataset.armed !== "1") { rb.dataset.armed = "1"; rb.textContent = "Tap again to remove"; setTimeout(() => { rb.dataset.armed = ""; rb.textContent = "Remove"; }, 5000); return; }
+            rb.disabled = true; rb.textContent = "Removing…";
+            post("/unsubscribe", { key: getKey(), email: x.email }).then(() => { toast(x.first + " was removed from updates."); render(); })
+              .catch(() => { rb.disabled = false; rb.dataset.armed = ""; rb.textContent = "Remove"; toast("Couldn’t remove just now. Please try again."); });
+          });
+          rr.appendChild(rb); k.appendChild(rr);
           pane.appendChild(k);
         });
       }).catch((e) => { status.textContent = e.code === "unauthorized" ? "Your host key didn’t work. Sign out and back in, then try again." : "Couldn’t load sign-ups just now. Please try again."; });
@@ -2345,7 +2352,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
         }));
         if (d.total > notes.length) { count.textContent = d.total + " notes on the wall"; count.hidden = false; }
       })
-      .catch(first)
+      .catch(() => { grid.hidden = true; }) // wall unreachable: keep the call to action, never claim it is empty
       .finally(() => grid.removeAttribute("aria-busy"));
   })();
 
@@ -2353,6 +2360,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
   (function () {
     const dlg = $("nl-pop"), form = $("nl-form"), err = $("nl-err"), done = $("nl-done");
     if (!dlg || !form) return;
+    let openedAt = Date.now(), busy = false;
     const K = "dn-nl", get = () => { try { return JSON.parse(localStorage.getItem(K) || "{}"); } catch (e) { return {}; } };
     const set = (v) => { try { localStorage.setItem(K, JSON.stringify(Object.assign(get(), v))); } catch (e) {} };
     const isHost = () => { try { return Boolean(localStorage.getItem("dn-host-key") || sessionStorage.getItem("dn-host-key")); } catch (e) { return false; } };
@@ -2360,7 +2368,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
     function open(auto) {
       if (dlg.open) return;
       if (auto && (quiet() || isHost() || /[?&]edit\b/.test(location.search) || document.documentElement.classList.contains("cms-on") || document.querySelector("dialog[open]"))) return;
-      form.hidden = false; done.hidden = true; err.textContent = "";
+      form.hidden = false; done.hidden = true; err.textContent = ""; openedAt = Date.now();
       dlg.showModal(); auto && set({ shown: Date.now() });
     }
     document.querySelectorAll("[data-nl-open]").forEach((b) => b.addEventListener("click", () => open(false)));
@@ -2387,17 +2395,19 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.value.trim())) return bad(f.email, "Please check your email address.");
       const digits = f.phone.value.replace(/\D/g, "");
       if (f.phone.value.trim() && (digits.length < 10 || digits.length > 15)) return bad(f.phone, "That phone number looks short. It’s optional, so you can leave it blank.");
+      if (busy) return; busy = true;
       go.disabled = true; go.textContent = "Adding you…";
+      const ctl = new AbortController(), stop = setTimeout(() => ctl.abort(), 15000);
       try {
-        const r = await fetch("/api/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ first: f.first.value, last: f.last.value, email: f.email.value, phone: f.phone.value, website: f.website.value }) });
+        const r = await fetch("/api/subscribe", { method: "POST", signal: ctl.signal, headers: { "content-type": "application/json" }, body: JSON.stringify({ first: f.first.value, last: f.last.value, email: f.email.value, phone: f.phone.value, website: f.website.value, t: Date.now() - openedAt }) });
         const d = await r.json().catch(() => null);
         if (!r.ok || !d || !d.ok) throw new Error((d && d.message) || "We couldn’t add you just now. Please try again.");
         set({ joined: Date.now() });
         $("nl-done-t").textContent = "You’re on the list, " + f.first.value.trim().split(" ")[0] + "!";
         form.hidden = true; done.hidden = false; $("nl-done-t").focus();
         form.reset();
-      } catch (ex) { err.textContent = ex.message || "We couldn’t add you just now. Please try again."; }
-      finally { go.disabled = false; go.textContent = "Keep me posted"; }
+      } catch (ex) { err.textContent = ex.name === "AbortError" || ex instanceof TypeError ? "The connection dropped. Please check your signal and try again." : (ex.message || "We couldn’t add you just now. Please try again."); }
+      finally { clearTimeout(stop); busy = false; go.disabled = false; go.textContent = "Keep me posted"; }
     });
   })();
 

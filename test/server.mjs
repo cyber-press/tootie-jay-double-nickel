@@ -12,6 +12,7 @@ globalThis.__DN_STORE = {
   async get(k, o = {}) { if (!mem.has(k)) return null; const v = mem.get(k); return o.type === "json" ? JSON.parse(v.data) : v.data; },
   async setJSON(k, v) { mem.set(k, { data: JSON.stringify(v) }); return { modified: true }; },
   async set(k, v, o = {}) { mem.set(k, { data: Buffer.from(v), metadata: o.metadata || {} }); return { modified: true }; },
+  async delete(k) { mem.delete(k); },
   async list(o = {}) { return { blobs: [...mem.keys()].filter((k) => k.startsWith(o.prefix || "")).map((key) => ({ key })) }; },
   async getWithMetadata(k) { if (!mem.has(k)) return null; const v = mem.get(k); return { data: v.data, metadata: v.metadata }; },
 };
@@ -26,7 +27,7 @@ const { default: api } = await import("../netlify/functions/api.mjs");
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".woff2": "font/woff2" };
 const delay = Number(process.env.API_DELAY || 0);
 http.createServer(async (req, res) => {
-  const url = new URL(req.url, "http://localhost");
+  const url = new URL(req.url, "http://" + (req.headers.host || "localhost"));
   if (url.pathname === "/__state") { res.setHeader("content-type", "application/json"); res.end(JSON.stringify({ keys: [...mem.keys()], site: mem.has("site") ? JSON.parse(mem.get("site").data) : null, history: mem.has("history") ? JSON.parse(mem.get("history").data) : null, calls })); return; }
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/img/")) {
     if (delay) await new Promise((r) => setTimeout(r, delay));

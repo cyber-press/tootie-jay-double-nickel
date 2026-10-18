@@ -30,6 +30,7 @@ async function askGoogle(key) {
     headers: { "content-type": "text/plain;charset=utf-8" },
     body: JSON.stringify({ action: "door", key }),
     redirect: "follow",
+    signal: AbortSignal.timeout(10_000),
   });
   const data = await res.json();
   return Boolean(data && data.ok);
@@ -130,10 +131,18 @@ async function wall() {
   let list;
   if (globalThis.__DN_WALL) list = await globalThis.__DN_WALL();
   else {
-    const res = await fetch(GOOGLE + "?action=messages", { redirect: "follow" });
-    const data = await res.json();
-    if (!data || !data.ok || !Array.isArray(data.messages)) throw new Error("wall");
-    list = data.messages;
+    try {
+      const res = await fetch(GOOGLE + "?action=messages", { redirect: "follow", signal: AbortSignal.timeout(8_000) });
+      const data = await res.json();
+      if (!data || !data.ok || !Array.isArray(data.messages)) throw new Error("wall");
+      list = data.messages;
+      store().setJSON("wall/last", { at: Date.now(), list: list.slice(0, 50) }).catch(() => {}); // fallback copy
+    } catch (e) {
+      // 2. Google slow or down: serve the last good copy instead of an empty wall
+      const last = await store().get("wall/last", { type: "json" }).catch(() => null);
+      if (!last || !Array.isArray(last.list)) throw e;
+      list = last.list;
+    }
   }
   const clip = (t, n) => { t = String(t || "").trim(); return t.length > n ? t.slice(0, n - 1).trimEnd() + "…" : t; };
   const notes = list.slice(0, 3).map((m) => ({ name: clip(m.name, 60), message: clip(m.message, 420), posted: m.posted }));
@@ -152,25 +161,62 @@ function tooMany(ip) {
   const now = Date.now(), list = (recent.get(ip) || []).filter((t) => now - t < 10 * 60_000);
   list.push(now); recent.set(ip, list);
   if (recent.size > 5000) recent.clear();
-  return list.length > 8;
+  return list.length > SUB_PER_HOUR;
 }
 const clean = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f\u007f<>]/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
+const SUB_CAP = 3000;            // plenty for one party; stops anyone filling the store with junk
+const SUB_PER_HOUR = 10;         // sign-ups allowed per device (IP) per hour
+const sameSite = (req) => {
+  const o = req.headers.get("origin");
+  if (!o) return true;           // some privacy tools strip it; the other checks still apply
+  try { return new URL(o).host === new URL(req.url).host; } catch (e) { return false; }
+};
+async function rateLimited(ip) {
+  if (tooMany(ip)) return true;  // fast check inside this warm instance
+  const s = store(), key = "rl/" + (await sha256("rl|" + ip)).slice(0, 24) + "/" + Math.floor(Date.now() / 3_600_000);
+  const n = ((await s.get(key, { type: "json" }).catch(() => null)) || { n: 0 }).n + 1;
+  await s.setJSON(key, { n }).catch(() => {});
+  return n > SUB_PER_HOUR;
+}
 async function subscribe(req) {
-  const b = await readBody(req);
-  if (b.website) return json({ ok: true }); // honeypot: bots fill every box
-  const ip = req.headers.get("x-nf-client-connection-ip") || req.headers.get("x-forwarded-for") || "?";
-  if (tooMany(ip)) return fail(429, "busy", "Too many tries. Please wait a few minutes and try again.");
+  if (!sameSite(req)) return fail(403, "forbidden", "Please sign up from the party site.");
+  const text = await req.text();
+  if (text.length > 4000) return fail(413, "too_large", "That’s more than we need.");
+  let b; try { b = JSON.parse(text || "{}") || {}; } catch (e) { return fail(400, "bad_request", "The request couldn’t be read."); }
+  if (b.website) return json({ ok: true });                         // honeypot: bots fill every box
+  if (typeof b.t === "number" && b.t < 1000) return json({ ok: true }); // filled in faster than a person can type
+  const ip = req.headers.get("x-nf-client-connection-ip") || (req.headers.get("x-forwarded-for") || "?").split(",")[0].trim();
+  if (await rateLimited(ip)) return fail(429, "busy", "Too many tries. Please wait a bit and try again.");
   const first = clean(b.first, 60), last = clean(b.last, 60), email = clean(b.email, 200).toLowerCase();
   const phoneRaw = clean(b.phone, 40), digits = phoneRaw.replace(/\D/g, "");
   if (!first || !last) return fail(400, "bad_name", "Please add your first and last name.");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail(400, "bad_email", "That email doesn’t look right.");
-  if (phoneRaw && (digits.length < 10 || digits.length > 15)) return fail(400, "bad_phone", "That phone number doesn’t look right. It’s optional, so you can leave it blank.");
+  if (phoneRaw && (digits.length < 10 || digits.length > 15 || /[^\d\s()+.\-]/.test(phoneRaw))) return fail(400, "bad_phone", "That phone number doesn’t look right. It’s optional, so you can leave it blank.");
   const key = "subs/" + (await sha256("sub|" + email)).slice(0, 32);
   const s = store();
   const prev = await s.get(key, { type: "json" });
+  if (!prev) {
+    const meta = (await s.get("meta/subs", { type: "json" }).catch(() => null)) || { n: 0 };
+    if (meta.n >= SUB_CAP) return fail(503, "full", "Sign-ups are closed right now. Please check back with the host.");
+    await s.setJSON("meta/subs", { n: meta.n + 1 });
+  }
   const now = new Date().toISOString();
   await s.setJSON(key, { first, last, email, phone: phoneRaw, at: prev ? prev.at : now, updated: now });
   return json({ ok: true, again: Boolean(prev) });
+}
+async function unsubscribe(req) {
+  const b = await readBody(req);
+  const denied = await requireHost(b.key);
+  if (denied) return denied;
+  const email = clean(b.email, 200).toLowerCase();
+  if (!email) return fail(400, "bad_request", "Which email should be removed?");
+  const s = store(), key = "subs/" + (await sha256("sub|" + email)).slice(0, 32);
+  if (await s.get(key, { type: "json" })) {
+    await s.delete(key);
+    const meta = (await s.get("meta/subs", { type: "json" }).catch(() => null)) || { n: 1 };
+    await s.setJSON("meta/subs", { n: Math.max(0, meta.n - 1) });
+  }
+  return json({ ok: true });
 }
 async function subscribers(req) {
   const b = await readBody(req);
@@ -197,6 +243,7 @@ export default async (req) => {
     if (path === "/api/photo") return await uploadPhoto(req);
     if (path === "/api/subscribe") return await subscribe(req);
     if (path === "/api/subscribers") return await subscribers(req);
+    if (path === "/api/unsubscribe") return await unsubscribe(req);
     return fail(404, "not_found", "Not found.");
   } catch (err) {
     if (err && err.code === "too_large") return fail(413, "too_large", "That’s too much to save at once.");
