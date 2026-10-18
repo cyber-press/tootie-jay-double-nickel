@@ -991,6 +991,58 @@ html.lb-open { overflow:hidden; }
 .nl-done-t { font:italic 700 1.45rem/1.2 var(--serif); color:var(--ink); outline:none; }
 .nl-done p { margin:0 0 .4rem; color:var(--muted); font-size:.92rem; }
 @media (max-width:340px) { .nl-row { grid-template-columns:1fr; } }
+/* ===== Party concierge chat ===== */
+.cb-fab { position:fixed; right:max(clamp(1rem,3vw,2rem), calc(env(safe-area-inset-right,0px) + .75rem)); bottom:calc(clamp(1rem,3vw,2rem) + env(safe-area-inset-bottom,0px)); z-index:60; display:inline-flex; align-items:center; gap:.55rem; min-height:52px; padding:0 1.15rem 0 .95rem; border:1px solid rgba(255,255,255,.55); border-radius:999px; background:linear-gradient(110deg,#b8893e,#f0d796 50%,#c99a4c); color:#1b1008; font:700 .9rem/1 var(--sans); box-shadow:0 14px 34px rgba(20,12,17,.35); cursor:pointer; transition:transform .25s var(--ease), box-shadow .25s ease, opacity .25s ease; }
+.cb-fab .ico { width:1.35rem; height:1.35rem; color:#3b162d; }
+.cb-fab:hover { transform:translateY(-2px); box-shadow:0 18px 40px rgba(20,12,17,.45); }
+.cb-fab[aria-expanded="true"] { opacity:0; pointer-events:none; }
+.cb-fab .cb-dot { width:.5rem; height:.5rem; border-radius:50%; background:#1f9d55; box-shadow:0 0 0 3px rgba(31,157,85,.22); }
+html.cms-on .cb-fab, html.cms-on .cb-panel { display:none !important; }
+.cb-panel { position:fixed; right:max(clamp(1rem,3vw,2rem), calc(env(safe-area-inset-right,0px) + .75rem)); bottom:calc(clamp(1rem,3vw,2rem) + env(safe-area-inset-bottom,0px)); z-index:61; display:flex; flex-direction:column; width:min(24rem, calc(100vw - 2rem)); height:min(36rem, calc(100vh - 7rem)); height:min(36rem, calc(100dvh - 7rem)); overflow:hidden; border:1px solid rgba(217,182,109,.65); border-radius:14px; background:var(--paper); box-shadow:0 30px 80px rgba(20,12,17,.45); transform-origin:right bottom; animation:cb-in .3s var(--ease) both; }
+@keyframes cb-in { from { opacity:0; transform:translateY(12px) scale(.97); } }
+@media (prefers-reduced-motion:reduce) { .cb-panel { animation:none; } }
+.cb-head { position:relative; display:flex; align-items:center; gap:.75rem; padding:.9rem 3.6rem .9rem 1rem; background:linear-gradient(130deg,#140c11,var(--plum) 62%,var(--wine-deep)); color:#e3d6c4; }
+.cb-av { display:grid; place-items:center; flex:none; width:2.5rem; height:2.5rem; border:1px solid rgba(217,182,109,.75); border-radius:50%; color:#d9b66d; font:italic 900 1rem/1 var(--serif); }
+.cb-head h2 { margin:0; font:italic 700 1.15rem/1.15 var(--serif); color:#f2dfb0; }
+.cb-head p { margin:.15rem 0 0; font-size:.78rem; color:#cdbfae; }
+.cb-x { position:absolute; top:50%; right:.7rem; translate:0 -50%; width:40px; height:40px; display:grid; place-items:center; border:1px solid rgba(242,223,176,.35); border-radius:50%; background:rgba(255,255,255,.08); color:#f6eddf; cursor:pointer; }
+.cb-x .ico { width:1rem; height:1rem; }
+.cb-log { flex:1; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; gap:.65rem; padding:1rem; scroll-behavior:smooth; }
+.cb-msg { max-width:86%; padding:.65rem .85rem; border-radius:14px; font-size:.94rem; line-height:1.5; white-space:pre-line; overflow-wrap:anywhere; }
+.cb-bot { align-self:flex-start; border:1px solid var(--soft-line); border-left:3px solid var(--gold); border-top-left-radius:4px; background:#fff; color:var(--body); }
+.cb-me { align-self:flex-end; border-top-right-radius:4px; background:var(--wine-deep); color:#fff; }
+.cb-err { align-self:flex-start; border:1px dashed rgba(168,13,87,.45); background:#fff8fb; color:var(--wine-text); font-size:.88rem; }
+.cb-acts { display:flex; flex-wrap:wrap; gap:.4rem; align-self:flex-start; margin-top:-.2rem; }
+.cb-act { display:inline-flex; align-items:center; min-height:36px; padding:0 .85rem; border:1px solid rgba(177,138,69,.7); border-radius:999px; background:#fff; color:var(--wine-text); font-weight:700; font-size:.82rem; text-decoration:none; cursor:pointer; }
+.cb-act:hover { background:var(--wine-deep); border-color:var(--wine-deep); color:#fff; }
+.cb-typing { display:inline-flex; gap:.3rem; align-items:center; padding:.8rem .95rem; }
+.cb-typing i { width:.42rem; height:.42rem; border-radius:50%; background:var(--gold); animation:cb-b 1.1s ease-in-out infinite; }
+.cb-typing i:nth-child(2) { animation-delay:.15s; } .cb-typing i:nth-child(3) { animation-delay:.3s; }
+@keyframes cb-b { 0%,80%,100% { opacity:.3; transform:none; } 40% { opacity:1; transform:translateY(-3px); } }
+.cb-chips { display:flex; flex-wrap:wrap; gap:.4rem; padding:0 1rem .6rem; }
+.cb-chip { min-height:34px; padding:0 .8rem; border:1px solid rgba(177,138,69,.6); border-radius:999px; background:#fffaf0; color:var(--ink); font-size:.82rem; cursor:pointer; }
+.cb-chip:hover { border-color:var(--gold); background:#fff3d9; }
+.cb-form { display:flex; gap:.5rem; align-items:flex-end; padding:.7rem .8rem .55rem; border-top:1px solid var(--soft-line); background:#fff; }
+.cb-in { flex:1; min-height:44px; max-height:7rem; resize:none; padding:.65rem .8rem; border:1px solid rgba(33,27,32,.2); border-radius:12px; font:inherit; font-size:16px; line-height:1.35; }
+.cb-in:focus { outline:none; border-color:var(--wine); box-shadow:0 0 0 3px rgba(168,13,87,.12); }
+.cb-send { flex:none; width:44px; height:44px; display:grid; place-items:center; border:0; border-radius:50%; background:linear-gradient(135deg,#b8893e,#f0d796 55%,#b8893e); color:#1b1008; cursor:pointer; }
+.cb-send[disabled] { opacity:.5; cursor:default; }
+.cb-send .ico { width:1.1rem; height:1.1rem; }
+.cb-fine { margin:0; padding:0 1rem .6rem; background:#fff; color:var(--muted); font-size:.72rem; text-align:center; }
+html.has-chat .to-top { bottom:calc(clamp(1rem,3vw,2rem) + 72px + env(safe-area-inset-bottom,0px)); }
+@media (max-width:860px) { html.has-chat .has-sticky .to-top { bottom:calc(5.25rem + 72px + env(safe-area-inset-bottom,0px)); } }
+@media (max-height:500px) and (orientation:landscape) { html.has-chat .has-sticky .to-top { bottom:calc(4rem + 58px + env(safe-area-inset-bottom,0px)); } }
+@media (max-width:860px) {
+  .has-sticky .cb-fab { bottom:calc(5.25rem + env(safe-area-inset-bottom,0px)); }
+  .cb-fab { min-height:52px; width:52px; padding:0; justify-content:center; }
+  .cb-fab .cb-fab-t, .cb-fab .cb-dot { display:none; }
+}
+@media (max-width:600px) {
+  .cb-panel { inset:0; width:auto; height:auto; border:0; border-radius:0; padding-bottom:env(safe-area-inset-bottom,0px); background:var(--paper); }
+  .cb-head { padding-top:calc(.9rem + env(safe-area-inset-top,0px)); }
+  .cb-x { top:calc(50% + env(safe-area-inset-top,0px) / 2); }
+}
+@media (max-height:500px) and (orientation:landscape) { .has-sticky .cb-fab { bottom:calc(4rem + env(safe-area-inset-bottom,0px)); width:46px; min-height:46px; } }
 #main.pg-enter > :not([data-off]) { animation:pg-in .45s var(--ease) both; }
 @keyframes pg-in { from { opacity:0; transform:translateY(10px); } }
 .pg-focus:focus, .pg-focus:focus-visible { outline:none; }
@@ -2383,7 +2435,7 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
     // automatic: after ~12s on Home, or once they've scrolled a good way down (whichever comes first)
     let timer = null, armed = false, since = Date.now();
     const onHome = () => (document.body.dataset.route || "home") === "home";
-    const busyNow = () => { const m = $("mobile-menu"), a = document.activeElement; return (m && !m.hidden) || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.querySelector("details.cal[open]"); };
+    const busyNow = () => { const m = $("mobile-menu"), a = document.activeElement; return window.__chatOpen || (m && !m.hidden) || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.querySelector("details.cal[open]"); };
     const fire = () => { if (!onHome()) return disarm(); if (busyNow()) { clearTimeout(timer); timer = setTimeout(fire, 5000); return; } disarm(); open(true); };
     const onScroll = () => { const max = document.documentElement.scrollHeight - innerHeight; if (max > 0 && scrollY / max > 0.4 && Date.now() - since > 4000) fire(); };
     function arm() { if (armed || quiet() || !onHome()) return; armed = true; since = Date.now(); timer = setTimeout(fire, 12000); addEventListener("scroll", onScroll, { passive: true }); }
@@ -2414,6 +2466,129 @@ if (window.__CMS) { if (Array.isArray(window.__CMS.gallery)) SITE.GALLERY = wind
       } catch (ex) { err.textContent = ex.name === "AbortError" || ex instanceof TypeError ? "The connection dropped. Please check your signal and try again." : (ex.message || "We couldn’t add you just now. Please try again."); }
       finally { clearTimeout(stop); busy = false; go.disabled = false; go.textContent = "Keep me posted"; }
     });
+  })();
+
+  /* party concierge chat: answers from this site's own text (with the host's edits), via the site's server */
+  (function () {
+    let enabled = false;
+    const K = "dn-chat", ACTIONS = {
+      rsvp: ["RSVP now", "/rsvp/"], wall: ["Leave a note", "/rsvp/?tab=wall"], dress: ["Dress code", "#dress-code"], schedule: ["Schedule", "#schedule"],
+      faq: ["FAQ", "#faq"], hotels: ["Nearby hotels", "#stay"], updates: ["Latest updates", "#updates"], calendar: ["Add to calendar", "#cal"],
+      directions: ["Get directions", ""],
+    };
+    const CHIPS = ["What time should I get there?", "What’s the dress code?", "Can I bring a plus-one?", "Where do I park?"];
+    const GREET = "Hey there! I’m the Double Nickel party concierge. Ask me anything about the celebration: timing, the venue, the dress code, RSVPs, hotels, you name it.";
+    const load = () => { try { return JSON.parse(sessionStorage.getItem(K) || "[]"); } catch (e) { return []; } };
+    const save = (h) => { try { sessionStorage.setItem(K, JSON.stringify(h.slice(-20))); } catch (e) {} };
+    let hist = load(), busy = false, panel, log, input, send, fab, chips;
+    const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+    // everything a guest can read on the site, as plain text (the host's edits are already applied to the page)
+    const SKIPSEL = "script,style,svg,noscript,#wp-grid,#cd-grid,#cd-local,.cms-bar,.cms-drawer,.lightbox,#nl-pop,.cb-panel,.cb-fab,[data-cms-ui]";
+    const BLOCK = /^(P|LI|H1|H2|H3|H4|H5|H6|DT|DD|DIV|SECTION|ARTICLE|SUMMARY|DETAILS|TR|BLOCKQUOTE|FIGCAPTION|HEADER|FOOTER|UL|OL|DL|BR|A|BUTTON)$/;
+    function textOf(root) {
+      let out = "";
+      (function walk(n) {
+        for (const c of n.childNodes) {
+          if (c.nodeType === 3) { out += c.textContent; continue; }
+          if (c.nodeType !== 1 || c.matches(SKIPSEL) || c.hidden) continue;
+          const block = BLOCK.test(c.tagName);
+          out += block ? "\n" : " ";
+          if (c.tagName === "DT") { walk(c); out += ": "; continue; }
+          walk(c);
+          const href = c.tagName === "A" && c.getAttribute("href") || "";
+          if (/^tel:/.test(href)) out += " (phone " + href.slice(4) + ")";
+          out += block ? "\n" : " ";
+        }
+      })(root);
+      return out.replace(/[ \t ]+/g, " ").replace(/ *\n */g, "\n").replace(/\n{2,}/g, "\n").trim();
+    }
+    function knowledge() {
+      const parts = [];
+      document.querySelectorAll("#main > section").forEach((sec) => { if (sec.hidden) return; const t = textOf(sec); if (t) parts.push("[" + (sec.id || "section") + "]\n" + t); });
+      const dir = document.querySelector('a[data-track="directions_google"]'); if (dir) parts.push("[directions link]\n" + dir.href);
+      [document.getElementById("privacy"), document.querySelector(".footer")].forEach((x) => { if (x) parts.push("[" + (x.id || "footer") + "]\n" + textOf(x)); });
+      return parts.join("\n\n").slice(0, 38000);
+    }
+
+    function bubble(role, text, actions) {
+      const b = el("div", "cb-msg " + (role === "user" ? "cb-me" : role === "error" ? "cb-err" : "cb-bot"), text);
+      log.appendChild(b);
+      if (actions && actions.length) {
+        const row = el("div", "cb-acts");
+        actions.forEach((a) => {
+          const def = ACTIONS[a]; if (!def) return;
+          let href = def[1];
+          if (a === "directions") { const d = document.querySelector('a[data-track="directions_google"]'); href = d ? d.href : "#venue"; }
+          const link = el("a", "cb-act", def[0]); link.href = href === "#cal" ? "#home" : href;
+          if (a === "directions") { link.target = "_blank"; link.rel = "noopener"; }
+          link.addEventListener("click", (e) => {
+            if (a === "calendar") { e.preventDefault(); close(); location.hash = "#home"; setTimeout(() => { const c = document.querySelector("details.cal"); if (c) { c.open = true; c.scrollIntoView({ block: "center" }); } }, 350); return; }
+            if (href.startsWith("#") && matchMedia("(max-width:600px)").matches) close();
+          });
+          row.appendChild(link);
+        });
+        log.appendChild(row);
+      }
+      log.scrollTop = log.scrollHeight;
+    }
+    function render() {
+      log.replaceChildren();
+      bubble("model", GREET);
+      hist.forEach((m) => bubble(m.role, m.text, m.actions));
+      chips.hidden = hist.length > 0;
+    }
+    function build() {
+      fab = el("button", "cb-fab"); fab.type = "button"; fab.setAttribute("aria-expanded", "false"); fab.setAttribute("aria-controls", "cb-panel"); fab.setAttribute("aria-label", "Ask the party concierge a question");
+      fab.innerHTML = '<svg class="ico" aria-hidden="true"><use href="#i-message-circle-heart"/></svg><span class="cb-fab-t">Ask about the party</span><span class="cb-dot" aria-hidden="true"></span>';
+      panel = el("section", "cb-panel"); panel.id = "cb-panel"; panel.hidden = true; panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", "Party concierge chat");
+      panel.innerHTML = '<div class="cb-head"><span class="cb-av" aria-hidden="true">TJ</span><div><h2 tabindex="-1">Party Concierge</h2><p>Questions about the Double Nickel? Ask away.</p></div>' +
+        '<button class="cb-x" type="button" aria-label="Close chat"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button></div>' +
+        '<div class="cb-log" role="log" aria-live="polite" aria-label="Conversation"></div><div class="cb-chips"></div>' +
+        '<form class="cb-form" novalidate><label class="sr-only" for="cb-in">Your question</label><textarea id="cb-in" class="cb-in" rows="1" maxlength="500" placeholder="Ask about time, venue, dress code…" autocomplete="off"></textarea>' +
+        '<button class="cb-send" type="submit" aria-label="Send"><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg></button></form>' +
+        '<p class="cb-fine">Answers come from this site. For anything else, reach out to Tenisia.</p>';
+      document.body.append(fab, panel);
+      log = panel.querySelector(".cb-log"); input = panel.querySelector(".cb-in"); send = panel.querySelector(".cb-send"); chips = panel.querySelector(".cb-chips");
+      CHIPS.forEach((q) => { const c = el("button", "cb-chip", q); c.type = "button"; c.addEventListener("click", () => ask(q)); chips.appendChild(c); });
+      fab.addEventListener("click", open);
+      panel.querySelector(".cb-x").addEventListener("click", close);
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !panel.hidden && !document.querySelector("dialog[open]")) { e.preventDefault(); close(); } });
+      input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 112) + "px"; });
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); panel.querySelector(".cb-form").requestSubmit(); } });
+      panel.querySelector(".cb-form").addEventListener("submit", (e) => { e.preventDefault(); const q = input.value.trim(); if (q) ask(q); });
+      render();
+    }
+    function open() {
+      panel.hidden = false; fab.setAttribute("aria-expanded", "true"); window.__chatOpen = true;
+      log.scrollTop = log.scrollHeight;
+      if (matchMedia("(pointer:fine)").matches) input.focus(); else panel.querySelector("h2").focus();
+      if (matchMedia("(max-width:600px)").matches) document.documentElement.style.overflow = "hidden";
+    }
+    function close() {
+      panel.hidden = true; fab.setAttribute("aria-expanded", "false"); window.__chatOpen = false;
+      document.documentElement.style.overflow = ""; fab.focus({ preventScroll: true });
+    }
+    async function ask(q) {
+      if (busy) return; busy = true; send.disabled = true;
+      input.value = ""; input.style.height = "auto"; chips.hidden = true;
+      hist.push({ role: "user", text: q.slice(0, 500) }); save(hist); bubble("user", q);
+      const typing = el("div", "cb-msg cb-bot cb-typing"); typing.setAttribute("aria-label", "Concierge is typing"); typing.innerHTML = "<i></i><i></i><i></i>"; log.appendChild(typing); log.scrollTop = log.scrollHeight;
+      const ctl = new AbortController(), stop = setTimeout(() => ctl.abort(), 30000);
+      try {
+        const r = await fetch("/api/chat", { method: "POST", signal: ctl.signal, headers: { "content-type": "application/json" },
+          body: JSON.stringify({ messages: hist.filter((m) => m.role !== "error").map((m) => ({ role: m.role, text: m.text })), knowledge: knowledge() }) });
+        const d = await r.json().catch(() => null);
+        typing.remove();
+        if (!r.ok || !d || !d.ok) throw new Error((d && d.message) || "I couldn’t reach my notes just now. Please try again.");
+        hist.push({ role: "model", text: d.reply, actions: d.actions || [] }); save(hist); bubble("model", d.reply, d.actions);
+      } catch (ex) {
+        typing.remove();
+        const msg = ex.name === "AbortError" || ex instanceof TypeError ? "Looks like the connection dropped. Check your signal and try again." : ex.message;
+        hist.pop(); save(hist); bubble("error", msg + " You can also find most answers in the FAQ.", ["faq"]);
+      } finally { clearTimeout(stop); busy = false; send.disabled = false; if (matchMedia("(pointer:fine)").matches) input.focus(); }
+    }
+    fetch("/api/chat", { headers: { accept: "application/json" } }).then((r) => (r.ok ? r.json() : null)).then((d) => { if (d && d.enabled && !enabled) { enabled = true; document.documentElement.classList.add("has-chat"); build(); } }).catch(() => {});
   })();
 
   /* navigation */

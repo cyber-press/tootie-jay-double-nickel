@@ -22,12 +22,20 @@ globalThis.__DN_WALL = async () => JSON.parse(process.env.WALL || JSON.stringify
   { name: "Marcus J.", message: "Happy Double Nickel, Tootie! You taught me how to two-step and how to show up for people. Can't wait to celebrate you.", posted: "2026-10-13T02:10:00Z" },
   { name: "Keisha & Dre", message: "From roller rink nights to now. Cheers to 55 more!", posted: "2026-10-11T22:45:00Z" },
   { name: "Old note", message: "Should not show.", posted: "2026-10-01T22:45:00Z" }]));
+if (process.env.CHATMOCK) globalThis.__DN_LLM = async ({ system, contents }) => {
+  globalThis.__lastChat = { systemLen: system.length, system, turns: contents.length };
+  const q = contents[contents.length - 1].parts[0].text.toLowerCase();
+  if (q.includes("dress")) return "Come in your 90's best! Think fly, polished throwback looks.\n[[actions: dress, rsvp]]";
+  if (q.includes("time")) return "Doors open at 9 PM, so aim to arrive right around then.\n[[actions: calendar]]";
+  return "Great question! Here's what I know.";
+};
 const { default: api } = await import("../netlify/functions/api.mjs");
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".woff2": "font/woff2" };
 const delay = Number(process.env.API_DELAY || 0);
 http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://" + (req.headers.host || "localhost"));
+  if (url.pathname === "/__chat") { res.setHeader("content-type", "application/json"); res.end(JSON.stringify(globalThis.__lastChat || null)); return; }
   if (url.pathname === "/__state") { res.setHeader("content-type", "application/json"); res.end(JSON.stringify({ keys: [...mem.keys()], site: mem.has("site") ? JSON.parse(mem.get("site").data) : null, history: mem.has("history") ? JSON.parse(mem.get("history").data) : null, calls })); return; }
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/img/")) {
     if (delay) await new Promise((r) => setTimeout(r, delay));
